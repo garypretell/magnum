@@ -1,0 +1,12 @@
+#imprimir:hover svg {
+    filter: invert(1);  
+}
+
+.contenedor::-webkit-scrollbar {
+	width: 7px;
+}
+
+.contenedor::-webkit-scrollbar-thumb {
+	background: #39ddc7;
+	border-radius: 5px;
+}

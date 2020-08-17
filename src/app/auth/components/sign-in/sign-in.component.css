@@ -1,0 +1,40 @@
+.inicio{
+    padding: 70px 0;
+    height:100%;
+    width: auto;
+}
+
+.section {
+    padding: 100px 0;
+    height:100%;
+    width: auto;
+}
+
+li { cursor: pointer; }
+
+#footer {
+    padding: 80px 0;
+    text-align: center;
+    color: #ffffff;
+  }
+  
+  #footer a {
+    color: #ffffff;
+  }
+  
+  #footer a:hover {
+    color: #ffffff;
+  }
+  
+  #footer .list-inline .list-inline-item {
+    padding: 10px 15px;
+  }
+  
+  @media (max-width: 576px) { 
+    h1 { font-size: 40px; line-height: normal;}
+    .footer-menu { 
+        display: block !important;
+        padding: 20px 0 !important;
+        font-size: 20px;
+    }
+  }

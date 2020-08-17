@@ -1,0 +1,262 @@
+<div class="breadcrumb d-flex justify-content-between align-items-center">
+  <ol class="breadcrumb mb-0 p-0">
+    <li class="breadcrumb-item text-primary">
+      <a role="button" (click)="goSede()">Sede</a>
+    </li>
+    <li class="breadcrumb-item text-primary">
+      <a role="button" (click)="goDocumento()">Documentos</a>
+    </li>
+    <li class="breadcrumb-item text-primary">
+      <a role="button" (click)="goLibro()">Libros</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">{{ milibro }}</li>
+  </ol>
+  <button class="btn btn-sm btn-success" *ngIf="sede">
+    <strong>{{ documento }} - {{ sede.nombre }}</strong>
+  </button>
+</div>
+
+<ng-container *ngIf="registros$ | async as registros; else loading">
+  <ng-container *ngIf="registros.length > 0; else mensaje">
+    <ng-container *ngIf="campos$ | async as campos">
+      <div class="mt-2" style="width: 100%; height: 90vh;">
+        <as-split direction="horizontal">
+          <as-split-area size="20" class="contenedor">
+            <div class="row">
+              <div class="col">
+                <div class="shadow card bg-info text-white text-center m-2">
+                  <h4> Documento {{documento}}</h4>
+                  <small>
+                    <cite title="Source Title">*Filtrar Documentos</cite>
+                  </small>
+                </div>
+                <hr class="mx-5">
+                <form>
+                  <ng-container *ngFor="let data of campos.campos">
+                    <div class="form-row" *ngIf="data.estado == true">
+                      <ng-container [ngSwitch]="data.tipo">
+                        <div dragula="DRAGULA_FACTS" class="w-100">
+                          <ng-container *ngSwitchCase="'numerico'">
+                            <div class="col mb-3" style="cursor: pointer;">
+                              <label for="{{data.nombre}}">{{data.nombre}}</label>
+                              <input type="number" class="form-control text-uppercase field-focus border border-info"
+                                name="{{data.nombre}}" [(ngModel)]="searchObject[data.nombre]"
+                                (keyup.enter)="keytab($event)" autofocus />
+                            </div>
+                          </ng-container>
+                          <ng-container *ngSwitchCase="'fecha'">
+                            <div class="col mb-3" style="cursor: pointer;">
+                              <label for="apellidos">{{data.nombre}}</label>
+                              <input type="date" placeholder="dd/mm/yyyy"
+                                class="form-control text-uppercase field-focus" name="{{data.nombre}}"
+                                [(ngModel)]="newObject[data.nombre]" (keyup.enter)="keytab($event)" autofocus />
+                            </div>
+                          </ng-container>
+                          <ng-container *ngSwitchDefault>
+                            <div class="col mb-3" style="cursor: pointer;">
+                              <label for="{{data.nombre}}">{{data.nombre}}</label>
+                              <input type="text" class="form-control text-uppercase field-focus border border-info"
+                                oninput="this.value = this.value.toUpperCase()" name="{{data.nombre}}"
+                                [(ngModel)]="searchObject[data.nombre]" (keyup.enter)="keytab($event)" autofocus />
+                            </div>
+                          </ng-container>
+                        </div>
+                      </ng-container>
+                    </div>
+                  </ng-container>
+                </form>
+                <div class="text-info text-center mt-0">
+                  <small>
+                    <cite title="Source Title">*Filtrar Documentos</cite>
+                  </small>
+                </div>
+              </div>
+            </div>
+            <hr class="mx-5 mb-4" />
+            <div class="shadow card m-2">
+              <div class="card-body">
+                <h5 class="card-title">{{ documento }}</h5>
+                <hr />
+                <p class="card-text">
+                  Para imprimir todos los registros pertenecientes a este libro,
+                  haga click en imprimir.
+                </p>
+                <button id="imprimir" class="btn btn-outline-primary" (click)="printLibro()">
+                  Imprimir
+                  <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                    xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 480 480"
+                    style="enable-background: new 0 0 480 480;" xml:space="preserve">
+                    <g>
+                      <g>
+                        <path d="M472,160h-40v-56c0-4.418-3.582-8-8-8h-24V8c0-4.418-3.582-8-8-8H88c-4.418,0-8,3.582-8,8v88H56c-4.418,0-8,3.582-8,8v56
+                       H8c-4.418,0-8,3.582-8,8v224c0,4.418,3.582,8,8,8h72v72c0,4.418,3.582,8,8,8h304c4.418,0,8-3.582,8-8v-72h72c4.418,0,8-3.582,8-8
+                       V168C480,163.582,476.418,160,472,160z M400,112h16v48h-16V112z M96,16h288v144H96V16z M64,112h16v48H64V112z M80,352h-8v-24h8
+                       V352z M384,464H96V328h288V464z M464,384h-64v-16h16c4.418,0,8-3.582,8-8v-40c0-4.418-3.582-8-8-8H64c-4.418,0-8,3.582-8,8v40
+                       c0,4.418,3.582,8,8,8h16v16H16V176h448V384z M400,352v-24h8v24H400z" />
+                      </g>
+                    </g>
+                    <g>
+                      <g>
+                        <rect x="176" y="352" width="176" height="16" />
+                      </g>
+                    </g>
+                    <g>
+                      <g>
+                        <rect x="128" y="384" width="224" height="16" />
+                      </g>
+                    </g>
+                    <g>
+                      <g>
+                        <rect x="128" y="416" width="176" height="16" />
+                      </g>
+                    </g>
+                    <g>
+                      <g>
+                        <rect x="128" y="352" width="32" height="16" />
+                      </g>
+                    </g>
+                    <g>
+                      <g>
+                        <path d="M104,192H40c-4.418,0-8,3.582-8,8v32c0,4.418,3.582,8,8,8h64c4.418,0,8-3.582,8-8v-32C112,195.582,108.418,192,104,192z
+                        M96,224H48v-16h48V224z" />
+                      </g>
+                    </g>
+                    <g>
+                      <g>
+                        <rect x="128" y="224" width="80" height="16" />
+                      </g>
+                    </g>
+                    <g>
+                      <g>
+                        <rect x="224" y="224" width="16" height="16" />
+                      </g>
+                    </g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </as-split-area>
+          <as-split-area size="80" class="m-2">
+            <div class="table-responsive">
+              <table class="table table-hover mt-3 text-center">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col" *ngFor="let column of campos.campos | filterBy: userFilterF">
+                      {{column.nombre | uppercase}}
+                    </th>
+                    <th scope="col"  *ngIf="auth.canDelete(auth.user$ | async)">ACCIONES</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    *ngFor="let item of registros$ | async | filterBy: searchObject | paginate: { itemsPerPage: 10, currentPage: p }; let i = index">
+                    <td>{{ 10 * (p -1) + i + 1}} </td>
+                    <td *ngFor="let col of campos.campos | filterBy: userFilterF">
+                      {{item[col.nombre] }}
+                    </td>
+                    <td  *ngIf="auth.canDelete(auth.user$ | async)">
+                      <button class="btn btn-outline-primary btn-sm mr-2" (click)="enableEditing($event, item)">
+                        <i class="fa fa-pencil"></i> Editar</button>
+
+                      <button class="btn btn-outline-danger btn-sm mr-2" (click)="deleteRegistro(item)">
+                        <i class="fa fa-trash"></i> Eliminar</button>
+                        <a role="button" class="btn btn-outline-secondary btn-sm" target="_blank"  [attr.href]="item.path | safe"><i class="fa fa-camera" aria-hidden="true"></i> Imagen</a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <pagination-controls (pageChange)="p = $event" *ngIf="(registros$ | async)?.length > 0">
+              </pagination-controls>
+            </div>
+          </as-split-area>
+        </as-split>
+      </div>
+      <div #myModalEditS class="modal fade" id="myModalEditS" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document" *ngIf="campos.campos as temporal;">
+          <div class="modal-content">
+            <form class="form" (ngSubmit)="updateRegistroS()">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Editar Registros</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form class="form-horizontal" role="form">
+                  <div *ngFor="let col of temporal| filterBy: userFilterF">
+                    <div class="form-group" *ngIf="col.estado !== 'principal' ">
+                      <label class="col-xs-4 control-label">
+                        <strong>{{col.nombre}}</strong>
+                      </label>
+                      <div class="col-xs-8">
+                        <div [ngSwitch]="col.tipo">
+                          <div *ngSwitchCase="'numerico'">
+                            <input type="number" class="form-control text-uppercase" [(ngModel)]="editObject[col.nombre]"
+                              [ngModelOptions]="{standalone: true}" />
+                          </div>
+                          <div *ngSwitchCase="'fecha'">
+                            <input type="date" placeholder="dd/mm/yyyy" class="form-control text-uppercase"
+                              [(ngModel)]="editObject[col.nombre]" [ngModelOptions]="{standalone: true}" />
+                          </div>
+                          <div *ngSwitchCase="'imagen'">
+                            <input type="file" class="form-control" [(ngModel)]="editObject[col.nombre]"
+                              [ngModelOptions]="{standalone: true}">
+                          </div>
+                          <div *ngSwitchDefault>
+                            <input type="text" enter class="form-control"
+                              oninput="this.value = this.value.toUpperCase()" [ngModelOptions]="{standalone: true}"
+                              [(ngModel)]="editObject[col.nombre]" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button class="btn btn-primary" type="submit">Actualizar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+</ng-container>
+
+<ng-template #mensaje>
+  <div class="col-md-12">
+    <div class="alert alert-primary alert-dismissible fade show" role="alert">
+      <strong>Mensaje!</strong> No existen documentos registrados.
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #loading>
+  <div class="d-flex justify-content-center mt-5">
+    <div class="spinner-border text-primary" role="status"></div>
+    <strong class="text-primary"> Loading... </strong>
+  </div>
+</ng-template>
+<app-imprimir-registro></app-imprimir-registro>

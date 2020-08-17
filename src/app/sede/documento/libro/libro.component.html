@@ -1,0 +1,125 @@
+  <div *ngIf="(topList$ | async) as topList; else loading">
+    <div class="breadcrumb d-flex justify-content-between align-items-center">
+      <ol class="breadcrumb mb-0 p-0">
+        <li class="breadcrumb-item text-primary">
+          <a role="button" (click)="goSede()">Home</a>
+        </li>
+        <li class="breadcrumb-item text-primary">
+          <a role="button" (click)="goDocumentos()">Documentos</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">Libros</li>
+      </ol>
+      <button class="btn btn-sm btn-success" *ngIf="sede">
+        <strong>{{documento}} - {{ sede.nombre }}</strong>
+      </button>
+    </div>
+    <div *ngIf="topList.length > 0; else mensaje">
+      <div class="container mt-5">
+        <div class="row">
+          <div class="col-sm-12 col-md-6">
+            <div class="row row-cols-1 row-cols-sm-2">
+              <ng-container *ngFor="let libro of topList">
+                <div class="col">
+                  <a role="button" class="shadow card2 text-center">
+                    <h3>Libro : {{libro.numLibro}}</h3>
+                    <hr>
+                    <button class="btn btn-outline-dark btn-sm m-2" (click)="goRegistrar(libro)" >Registrar</button>
+                    <button class="btn btn-outline-secondary btn-sm" (click)="goListado(libro)">Partidas</button><br>
+                    <button type="button" class="btn btn-outline-primary btn-sm m-2" (click)="goUpload(libro)"  *ngIf="auth.canDelete(auth.user$ | async)">Subir Imágenes <i class="fa fa-cloud-upload" aria-hidden="true"></i></button>
+                    <div class="go-corner" href="#">
+                      <div class="go-arrow">
+                        →
+                      </div>
+                    </div>
+                  </a>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+          <div class="col-sm-12 order-first col-md-6">
+            <div class="shadow alert alert-warning alert-dismissible fade show" role="alert">
+              <strong>Importante!</strong> Actualmente se muestran los <strong>6 últimos libros</strong> creados. <br>
+              Para mostrar todos los libros: <a role="button" (click)="mostrarTodo()"
+                class="badge badge-primary text-white more">LISTADO</a>
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="shadow-lg card text-left border border-primary">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                  <h5 class="card-title">{{documento}} <small>(Libros)</small></h5>
+                  <a role="button" class="text-primary mb-2" (click)="showModal()">
+                    <i class="fa fa-plus-circle fa-2x" aria-hidden="true"></i>
+                  </a>
+                </div>
+                
+                <input type="number" id="inputPassword6" class="form-control border border-primary" aria-describedby="passwordHelpInline"  placeholder="Número de Libro" [(ngModel)]="numLibro" [ngModelOptions]="{standalone: true}">
+                <div class="custom-control custom-radio mt-1">
+                  <input type="radio" id="customRadio1" name="customRadio" class="custom-control-input" [(ngModel)]="tipoBusqueda" [value]="true">
+                  <label class="custom-control-label justify-content-start" for="customRadio1">Registrar una partida </label>
+                </div>
+                <div class="custom-control custom-radio align-content-start">
+                  <input type="radio" id="customRadio2" name="customRadio" class="custom-control-input" [(ngModel)]="tipoBusqueda" [value]="false">
+                  <label class="custom-control-label justify-content-start" for="customRadio2">Mostrar Libro</label>
+                </div>
+                <button type="button" class="btn btn-primary mt-3" (click)="goLibro()" ><i class="fa fa-search" aria-hidden="true"> </i> Buscar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>  
+    </div>
+  </div>
+  
+  <ng-template #mensaje>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <strong>Hola!</strong> Actualmente no tienes ningún libro agregado a este documento. <strong>Agregue un nuevo
+        libro:<a class="btn" (click)="showModal()">
+          <i class="fa fa-plus-circle fa-2x" aria-hidden="true"></i>
+        </a></strong>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  </ng-template>
+  <ng-template #loading>
+    <div class="d-flex justify-content-center mt-5">
+      <div class="spinner-border text-info" role="status">
+      </div>
+      <strong class="text-info"> Loading... </strong>
+    </div>
+  </ng-template>
+  
+  <div #addMLibro class="modal fade" id="addMLibro" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog" role="document">
+          <div class="modal-content">
+              <form class="form" [formGroup]="addLibroForm">
+                  <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Registrar Libro</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                      </button>
+                  </div>
+                  <div class="modal-body">
+  
+                      <div class="row">
+                      </div>
+                      <div class="row">
+                          <div class="col">
+                              <label for="nombre">Libro:</label>
+                              <input type="number" class="form-control" id="numLibro" name="numLibro"
+                                  formControlName="numLibro">
+                          </div>
+                      </div>
+                  </div>
+                  <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                      <button class="btn btn-primary" (click)="addLibro()" [disabled]="!addLibroForm.valid">Save
+                      </button>
+                  </div>
+              </form>
+          </div>
+      </div>
+  </div>

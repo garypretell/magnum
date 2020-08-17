@@ -1,0 +1,44 @@
+<ng-container *ngIf="auth.user$ | async as user">
+  <div class="container py-5 px-4" *ngIf="roomChats$ | async  as roomChats; else loading">
+    <div class="row rounded-lg overflow-hidden shadow">
+      <div class="col-12 px-0">
+        <div class="bg-white">
+          <div class="bg-gray px-4 py-2 bg-light">
+            <p class="h5 mb-0 py-1">Contactos</p>
+          </div>
+          <div>
+            <div class="list-group rounded-0" *ngFor="let item of roomChats; trackBy: trackByFn">
+              <a (click)="conectar(item)"
+                class="list-group-item list-group-item-action list-group-item-light rounded-0">
+                <div class="media">
+                  <img src="https://res.cloudinary.com/mhmd/image/upload/v1564960395/avatar_usae7z.svg" alt="user" width="50" class="rounded-circle" />
+                  <div class="media-body ml-4">
+                    <div class="d-flex align-items-center justify-content-between mb-1">
+                      <h6 class="mb-0">{{ item.displayName | uppercase }}<br><small>({{item.sede.nombre }})</small></h6>
+                      <small *ngIf="item.ratings.length > 0" class="badge badge-primary badge-pill">
+                        <strong>{{ item.ratings.length }} </strong>
+                      </small>
+                    </div>
+                    <p class="font-italic text-muted mb-0 text-small">
+                      {{ item.ratings[item.ratings.length - 1]?.mensaje }}
+                    </p>
+                  </div>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<div class="content">
+  <ng-template #loading>
+    <div class="d-flex justify-content-center mt-5">
+      <div class="spinner-border text-info" role="status">
+      </div>
+      <strong class="text-info"> Loading... </strong>
+    </div>
+  </ng-template>
+</div>

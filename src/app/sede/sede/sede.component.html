@@ -1,0 +1,139 @@
+<ng-container *ngIf="sedes$ | async as sedes">
+    <div class="col-md-8 offset-md-2 mt-5">
+        <div class="shadow-lg card">
+            <h5 class="card-header bg-primary text-white">Administrar Sedes</h5>
+            <div class="card-body">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="card-title">Sedes</h5>
+                    <button type="button" class="btn btn-outline-primary" (click)="show_addModal()">Agregar Sede
+                    </button>
+                </div>
+                <p class="card-text">Listado de sedes pertenecientes a su proyecto.</p>
+                <input type="search" class="form-control text-uppercase mb-3" placeholder="Buscar Sede"
+                    [(ngModel)]="searchObject.nombre" />
+                <div class="list-group altura">
+                    <div *ngFor="let sede of sedes | filterBy: searchObject">
+                        <a class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1" [ngStyle]="{'color':getColor(sede.estado)}">{{ sede.nombre }}</h5>
+                                <form class="form-inline">
+                                    <span role="button" class="badge badge-danger align-self-center mr-3"
+                                        (click)="deleteSede(sede)">Eliminar</span>
+                                    <span role="button" class="badge badge-primary align-self-center"
+                                        (click)="editSede(sede)">Editar</span>
+                                </form>
+                            </div>
+                            <div class="d-flex w-100 justify-content-between">
+                                <form class="form-inline">
+                                    <button (click)="goDocumentos(sede)" type="button"
+                                        class="btn btn-outline-info btn-sm mr-2">
+                                        Documentos
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary btn-sm"
+                                        (click)="goUsuario(sede)">
+                                        Usuarios
+                                    </button>
+                                </form>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-container>
+<ng-template #loading>
+    <div class="d-flex justify-content-center mt-5">
+        <div class="spinner-border text-info" role="status">
+        </div>
+        <strong class="text-info"> Loading... </strong>
+    </div>
+</ng-template>
+
+<div #addModal class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+        <form class="form" [formGroup]="addSedeForm">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Agregar Sede</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-3">
+                    <div class="col">
+                        <label for="nombre1">Nombre Sede:</label>
+                        <input type="text" class="form-control text-uppercase" id="nombre1" name="nombre1"
+                            formControlName="nombre" oninput="this.value = this.value.toUpperCase()">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        <label for="nivel">Es Administrador del Sistema?</label>
+                        <select class="form-control" formControlName="secretariaGeneral">
+                            <option selected disabled>Seleccione...</option>
+                            <option [ngValue]="true">Si</option>
+                            <option [ngValue]="false">No</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button class="btn btn-primary" (click)="addSede()"  [disabled]="!addSedeForm.valid">Guardar </button>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+<div #editModal class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+        <form class="form" (ngSubmit)="updateSede(sedetoEdit)">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Editar Sede</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-3">
+                    <div class="col">
+                        <label for="nombreEdit2">Sede:</label>
+                        <input type="text" class="form-control text-uppercase" id="nombreEdit2" name="nombreEdit2"
+                            [(ngModel)]="sedetoEdit.nombre" readonly>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        <label for="secre">Es administrador del proyecto?</label>
+                        <select class="form-control" id="secre" name="secre"
+                            [(ngModel)]="sedetoEdit.principal">
+                            <option [ngValue]="true">Si</option>
+                            <option [ngValue]="false">No</option>
+
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        <label for="estado">Estado:</label>
+                        <select class="form-control" id="estado" name="estado" [(ngModel)]="sedetoEdit.estado">
+                            <option [ngValue]="true">Activo</option>
+                            <option [ngValue]="false">Inactivo</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button class="btn btn-primary" type="submit">Guardar cambios</button>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+<router-outlet></router-outlet>

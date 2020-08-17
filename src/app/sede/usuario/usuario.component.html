@@ -1,0 +1,112 @@
+<section>
+    <ng-container *ngIf="usuarios$ | async as usuarios; else loading">
+      <div class="container h-100 mt-5">
+        <div class="row h-100">
+          <div class="col-sm-12 col-md-4 mb-4">
+            <h5>Usuarios</h5>
+            <hr class="mt-1">
+            <div class="input-group mb-2">
+              <input type="search" class="form-control text-uppercase" id="inlineFormInputGroup"
+                placeholder="Buscar Usuario" [(ngModel)]="searchObject.displayName">
+            </div>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+              <strong>Mensaje!</strong> Modifique los permisos de cada usuario.
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-8 bg-light">
+            <ng-container *ngFor="let usuario of usuarios.usuarios | filterBy: searchObject">
+              <ul class="list-unstyled mb-4">
+                <div class="shadow-sm card mt-2">
+                  <li class="media">
+                    <img src="https://res.cloudinary.com/mhmd/image/upload/v1564960395/avatar_usae7z.svg" class="m-3 rounded-circle" width="60" alt="...">
+                    <div class="media-body">
+                      <h5 class="mt-2 mb-0">{{usuario.displayName | titlecase}} </h5>
+                      <small class="mt-0 mb-0">({{usuario.sede.nombre}})</small> <br>
+                      <hr class="mt-1 mb-1">
+                      <div class="d-flex w-100 justify-content-between mt-2 mb-2">
+                        <form>
+                          <button type="button" class="btn btn-outline-primary  m-1" (click)="editUsuario(usuario)"
+                            *ngIf="auth.canDelete(auth.user$ | async)">Editar</button>
+                          <button type="button" class="btn btn-outline-danger  m-1 "
+                            *ngIf="auth.canDelete(auth.user$ | async)" (click)="deleteUsusario(usuario)">Eliminar</button>
+                        </form>
+                        <form>
+                          <button type="button" class="btn btn-outline-secondary  m-1 mr-2"
+                            (click)="goReporte(usuario)">Reportes</button>
+                        </form>
+                      </div>
+                    </div>
+                  </li>
+                </div>
+              </ul>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </section>
+  
+  <ng-template #loading>
+    <div class="d-flex justify-content-center mt-5">
+      <div class="spinner-border text-info" role="status">
+      </div>
+      <strong class="text-info"> Loading... </strong>
+    </div>
+  </ng-template>
+  
+  <div #editModal class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+  
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Editar Usuario</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="container">
+            <div class="row">
+              <div class="col mb-2">
+                <label for="nivel">Acceso al Sistema:</label>
+                <select class="form-control" [(ngModel)]="subscriber">
+                  <option selected disabled value="">Seleccione...</option>
+                  <option [ngValue]="true">SI</option>
+                  <option [ngValue]="false">NO</option>
+                </select>
+              </div>
+            </div>
+            <div class="row mb-2">
+              <div class="col">
+                <label for="nivel">Ingresar Registros:</label>
+                <select class="form-control" [(ngModel)]="editor">
+                  <option selected disabled value="">Seleccione...</option>
+                  <option [ngValue]="true">SI</option>
+                  <option [ngValue]="false">NO</option>
+                </select>
+              </div>
+            </div>
+            <div class="row mb-2">
+              <div class="col">
+                <label for="nivel">Es Secretaria?</label>
+                <select class="form-control" [(ngModel)]="admin">
+                  <option selected disabled value="">Seleccione...</option>
+                  <option [ngValue]="true">SI</option>
+                  <option [ngValue]="false">NO</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button class="btn btn-primary" (click)="updateUsuario()"> Actualizar </button>
+        </div>
+  
+      </div>
+    </div>
+  </div>

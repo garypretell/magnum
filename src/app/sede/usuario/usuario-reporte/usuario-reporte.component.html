@@ -1,0 +1,87 @@
+<div class="container-fluid mt-3"  *ngIf="midata$ | async as data; else loading">
+    <div class="row">
+      <div class="col-md-4 mb-2">
+        <div class="shadow card mb-4">
+          <div class="card-body ">
+            <ng-container *ngIf="usuarioDoc | async as usuario" >
+              <h5 class="card-title">{{ usuario?.displayName | titlecase }}</h5>
+              <h6>{{usuario?.sede.nombre}}</h6>
+            </ng-container>
+            <hr>
+            <p class="text-muted">Se visualiza el progreso del usuario en la indexación de documentos (hoy). <br>
+              Modifique las fechas para obtener el reporte deseado. <br> </p>
+          </div>
+        </div>
+        <table class="table text-center" *ngIf="data.length > 0" >
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Documento</th>
+              <th scope="col"># Registros</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let d of data;trackBy: trackByFn ; let i = index">
+              <td>{{ i+1 }}</td>
+              <td>{{ d.name | uppercase }}</td>
+              <td>{{ d.value }}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-md-8 mb-5 bg-light">
+        <div class="shadow alert alert-warning alert-dismissible fade show mt-3 mx-3" role="alert">
+          <hr class="mt-1 mb-1">
+          <div class="row justify-content-between">
+            <div class="dropdown mb-2 ml-2">
+              <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+                {{nomFecha}}
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                <button class="dropdown-item" type="button" (click)="hoy()" >Día</button>
+                <button class="dropdown-item" type="button" (click)="rango()" >Rango de Fechas</button>
+              </div>
+            </div>
+            <form class="form-inline mb-2">
+              <ng-container *ngIf="!fechaActual; else actual"  >
+                <label for="desde" class="ml-2 mr-1">Desde: </label>
+                <input type="date" class="form-control mr-2" [max]= "hasta" [(ngModel)]="desde"  [ngModelOptions]="{ standalone: true }" id="desde" (ngModelChange)="changeBetween()">
+                <label for="hasta" class="ml-2 mr-1">Hasta: </label>
+                <input type="date" class="form-control" [min]="desde" [max]= "hoyF" [(ngModel)]="hasta"  [ngModelOptions]="{ standalone: true }" id="hasta" (ngModelChange)="changeBetween()">
+              </ng-container>
+              <ng-template #actual>
+                <input type="date" class="form-control" [max]="hoyF" [(ngModel)]="today" [ngModelOptions]="{ standalone: true }" (ngModelChange)="changeActual(today)"  > 
+              </ng-template>
+            </form>
+          </div>
+         </div>
+        <div class="container-fluid mt-3">
+          <div class="row">
+            <div class="col mt-3">
+              <div class="shadow-lg card mb-5">
+                <div class="card-body">
+                  <div class="row justify-content-center align-items-center mt-4">
+                    <ng-container>
+                      <ngx-charts-bar-vertical (window:resize)="onResize($event)" [view]="view" [results]="data"
+                        [gradient]="gradient" [xAxis]="showXAxis" [yAxis]="showYAxis" [legend]="showLegend"
+                        [showXAxisLabel]="showXAxisLabel" [showYAxisLabel]="showYAxisLabel" [showDataLabel]="false"
+                        [xAxisLabel]="xAxisLabel" [yAxisLabel]="yAxisLabel" (select)="onSelect($event)">
+                      </ngx-charts-bar-vertical>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #loading>
+    <div class="d-flex justify-content-center mt-5">
+      <div class="spinner-border text-primary" role="status"></div>
+      <strong class="text-primary"> Loading... </strong>
+    </div>
+  </ng-template>

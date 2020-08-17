@@ -1,0 +1,8 @@
+{
+    "/v0/b/indexa-7cdf3.appspot.com/o/*": {
+        "target": "https://firebasestorage.googleapis.com",
+        "secure": false,
+        "changeOrigin": true
+    }
+
+}

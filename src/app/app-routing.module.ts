@@ -2,14 +2,43 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { PageNotFoundComponent } from './shared/components';
 
-import { HomeRoutingModule } from './home/home-routing.module';
-import { DetailRoutingModule } from './detail/detail-routing.module';
-
+import { RequireUnauthGuard, EditorGuard } from './auth/guards';
+import { SedeResolverGuard } from './sede/sede-resolver.guard';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'home',
-    pathMatch: 'full'
+    loadChildren:  './auth/auth.module#AuthModule',
+    canActivate: [RequireUnauthGuard]
+  },
+  {
+    path: 'Home',
+    loadChildren:  './inicio/inicio.module#InicioModule',
+  },
+  {
+    path: 'registrar',
+    loadChildren: './account/account.module#AccountModule'
+  },
+  {
+    path: 'verify-email',
+    loadChildren: './verify/verify.module#VerifyModule'
+  },
+  {
+    path: 'proyecto',
+    loadChildren: './proyecto/proyecto.module#ProyectoModule'
+  },
+  {
+    path: 'proyecto/:p/sede',
+    loadChildren: './sede/sede.module#SedeModule',
+    canActivate: [EditorGuard],
+    resolve: { sede: SedeResolverGuard}
+  },
+  {
+    path: 'Chat',
+    loadChildren: './chat/chat.module#ChatModule'
+  },
+  {
+    path: 'chats/:id',
+    loadChildren:'./chat-user/chat-user.module#ChatUserModule'
   },
   {
     path: '**',
@@ -19,9 +48,7 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes),
-    HomeRoutingModule,
-    DetailRoutingModule
+    RouterModule.forRoot(routes)
   ],
   exports: [RouterModule]
 })

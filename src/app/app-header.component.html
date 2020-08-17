@@ -1,0 +1,29 @@
+<nav class="navbar navbar-expand-lg sticky-top navbar-light bg-light mb-2" *ngIf="(auth.user$) | async">
+
+  <a class="navbar-brand" [routerLink]="['/Home']"> <strong><em> Sindex </em></strong></a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a #proyectosLink routerLinkActive="active" class="nav-link more" [routerLink]="['/Chat']"
+          *ngIf="auth.canDelete(auth.user$ | async)" >
+          Chat</a>
+      </li>
+      <li class="nav-item" *ngIf="auth.canEdit(auth.user$ | async)">
+        <a #proyectosLink routerLinkActive="active" class="nav-link more" (click)="goDocumento()">
+          Mis Documentos</a>
+      </li>
+      <li class="nav-item" *ngIf="auth.canDelete(auth.user$ | async)">
+        <a #proyectosLink routerLinkActive="active" class="nav-link more" (click)="goUsuarios()">
+          Mis Usuarios</a>
+      </li>
+    </ul>
+    <form class="form-inline my-2 my-lg-0">
+      <button type="button" (click)="signOut()" class="btn btn-outline-danger">Cerrar Sesión <i class="fa fa-power-off"
+          aria-hidden="true"></i></button>
+    </form>
+  </div>
+</nav>

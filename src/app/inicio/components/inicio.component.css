@@ -1,0 +1,4 @@
+.modal-body2 {
+    max-height: calc(100vh - 390px);
+    overflow-y: auto;
+}

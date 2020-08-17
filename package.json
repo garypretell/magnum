@@ -29,7 +29,7 @@
     "build": "npm run electron:serve-tsc && ng build --base-href ./",
     "build:dev": "npm run build -- -c dev",
     "build:prod": "npm run build -- -c production",
-    "ng:serve": "ng serve -c web -o",
+    "ng:serve": "ng serve --proxy-config proxy.conf.json",
     "electron:serve-tsc": "tsc -p tsconfig.serve.json",
     "electron:serve": "wait-on tcp:4200 && npm run electron:serve-tsc && npx electron . --serve",
     "electron:local": "npm run build:prod && npx electron .",
@@ -38,7 +38,11 @@
     "test:watch": "ng test",
     "e2e": "npm run build:prod && cross-env TS_NODE_PROJECT='e2e/tsconfig.e2e.json' mocha --timeout 300000 --require ts-node/register e2e/**/*.e2e.ts",
     "version": "conventional-changelog -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=assets/icons/mac/icon.icns --prune=true --out=release-builds",
+    "package-win": "electron-packager . electron-tutorial-app --overwrite --asar --platform=win32 --arch=x64 --icon=assets/icons/win/icon.ico --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Electron Tutorial App\"",    
+    "package-linux": "electron-packager . electron-tutorial-app --overwrite --asar --platform=linux --arch=x64 --icon=assets/icons/png/1024x1024.png --prune=true --out=release-builds"
+ 
   },
   "devDependencies": {
     "@angular-builders/custom-webpack": "9.2.0",
@@ -91,9 +95,35 @@
     "typescript": "3.9.7",
     "wait-on": "5.0.1",
     "webdriver-manager": "12.1.7",
-    "zone.js": "0.10.3"
+    "zone.js": "0.10.3",
+    "@angular-devkit/architect": ">= 0.900 < 0.1100",
+    "firebase-tools": "^8.0.0",
+    "fuzzy": "^0.1.3",
+    "inquirer": "^6.2.2",
+    "inquirer-autocomplete-prompt": "^1.0.1",
+    "open": "^7.0.3"
   },
   "engines": {
     "node": ">=10.13.0"
+  },
+  "dependencies": {
+    "@angular/animations": "10.0.9",
+    "@angular/cdk": "10.1.3",
+    "@angular/fire": "6.0.2",
+    "@swimlane/ngx-charts": "14.0.0",
+    "angular-split": "4.0.0",
+    "bootstrap": "4.5.2",
+    "firebase": "7.18.0",
+    "iv-viewer": "2.0.1",
+    "jquery": "3.5.1",
+    "ng2-dragula": "2.1.1",
+    "ng2-image-viewer": "3.0.5",
+    "ngx-filter-pipe": "2.1.2",
+    "ngx-infinite-scroll": "9.0.0",
+    "ngx-pagination": "5.0.0",
+    "ngx-spinner": "10.0.1",
+    "popper.js": "1.14.3",
+    "rxjs-compat": "6.6.2",
+    "sweetalert2": "9.17.1"
   }
 }

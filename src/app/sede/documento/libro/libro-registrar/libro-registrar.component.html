@@ -1,0 +1,236 @@
+<div class="breadcrumb d-flex justify-content-between align-items-center">
+    <ol class="breadcrumb mb-0 p-0">
+        <li class="breadcrumb-item text-primary">
+            <a role="button" (click)="goSede()">Sede</a>
+        </li>
+        <li class="breadcrumb-item text-primary">
+            <a role="button" (click)="goDocumento()">Documentos</a>
+        </li>
+        <li class="breadcrumb-item text-primary">
+            <a role="button" (click)="goLibro()">Libros</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">{{ milibro }}</li>
+    </ol>
+    <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+        <div class="btn-group" role="group">
+            <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+                Ver
+            </button>
+            <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                <a role="button" class="dropdown-item" (click)="verListado()">Listado</a>
+                <a role="button" class="dropdown-item" (click)="verImagen()">Imagen</a>
+            </div>
+        </div>
+        <button type="button" class="btn btn-secondary" (click)="cargarImagen()">Recargar Imágen <i
+                class="fa fa-refresh" aria-hidden="true"></i></button>
+
+    </div>
+    <button class="btn btn-sm btn-success">
+        <strong>{{ documento }}</strong>
+    </button>
+</div>
+
+<ng-container *ngIf="campos$ | async as campos; else mensaje">
+    <div class="mt-2" style="width: 100%; height: 90vh;">
+        <as-split direction="horizontal">
+            <as-split-area size="20" class="contenedor">
+                <div class="custom-control custom-switch m-2">
+                    <input type="checkbox" class="custom-control-input" id="customSwitch1"  [(ngModel)]="checkBoxValue" [ngModelOptions]="{ standalone: true }">
+                    <label class="custom-control-label" for="customSwitch1">Registrar con imágen</label>
+                  </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="shadow card bg-primary text-white text-center m-2">
+                            <h4> Documento {{documento}}</h4>
+                            <small>
+                                <cite title="Source Title">*Todos los campos son requeridos</cite>
+                            </small>
+                        </div>
+                        <hr class="mx-5">
+                        <form #formcontrol="ngForm" class="needs-validation m-2" novalidate>
+                            <ng-container *ngFor="let data of campos.campos">
+                                <div class="form-row" *ngIf="data.estado == true ">
+                                    <ng-container [ngSwitch]="data.tipo">
+                                        <div dragula="DRAGULA_FACTS" class="w-100">
+                                            <ng-container *ngSwitchCase="'numerico'">
+                                                <div class="col mb-3" style="cursor: pointer;">
+                                                    <label for="apellidos">{{data.nombre}}</label>
+                                                    <input type="number" class="form-control text-uppercase field-focus"
+                                                        name="{{data.nombre}}" [(ngModel)]="newObject[data.nombre]"
+                                                        (keyup.enter)="keytab($event)" autofocus required />
+                                                </div>
+                                            </ng-container>
+                                            <ng-container *ngSwitchCase="'fecha'">
+                                                <div class="col mb-3" style="cursor: pointer;">
+                                                    <label for="apellidos">{{data.nombre}}</label>
+                                                    <input type="date" placeholder="dd/mm/yyyy"
+                                                        class="form-control text-uppercase field-focus"
+                                                        name="{{data.nombre}}" [(ngModel)]="newObject[data.nombre]"
+                                                        (keyup.enter)="keytab($event)" autofocus required />
+                                                </div>
+                                            </ng-container>
+                                            <ng-container *ngSwitchDefault>
+                                                <div class="col mb-3" style="cursor: pointer;">
+                                                    <label for="apellidos">{{data.nombre}}</label>
+                                                    <input type="text" class="form-control text-uppercase field-focus"
+                                                        oninput="this.value = this.value.toUpperCase()"
+                                                        name="{{data.nombre}}" [(ngModel)]="newObject[data.nombre]"
+                                                        (keyup.enter)="keytab($event)" autofocus required />
+                                                </div>
+                                            </ng-container>
+                                        </div>
+                                    </ng-container>
+                                </div>
+                            </ng-container>
+                            <button (click)="add(newObject)" class="btn btn-primary btn-lg btn-block"
+                                [disabled]="!formcontrol.form.valid">Registrar</button>
+                        </form>
+                        <div class="text-primary text-center mt-0">
+                            <small>
+                                <cite title="Source Title">*Todos los campos son requeridos</cite>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </as-split-area>
+            <as-split-area size="80" class="">
+                <ng-container *ngIf="!listado; else vistaimagen">
+                    <ng-container *ngIf="image; else mensaje2">
+                        <app-image-viewer [images]="[image]" [loadOnInit]="true" [idContainer]="'idOnHTML'"
+                            [showOptions]="true"></app-image-viewer>
+                    </ng-container>
+                </ng-container>
+                <ng-template #vistaimagen>
+                    <div class="shadow alert alert-warning alert-dismissible fade show" role="alert">
+                        <strong>Importante!</strong> Actualmente se muestran los últimos 6 registros(por usuario). <br>
+                        Si desea ver el <strong>listado completo</strong> de este libro, haga click en: <span
+                            (click)="goListado()" role="button" class="badge badge-success">
+                            Libro {{milibro}} <i class="fa fa-book" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover mt-3 text-center">
+                            <caption>*Se muestran los últimos 6 regitros.</caption>
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <ng-container *ngFor="let column of campos.campos  | filterBy: userFilterF">
+                                        <th scope="col" *ngIf="column.estado !== 'principal' ">
+                                            {{column.nombre | uppercase}}
+                                        </th>
+                                    </ng-container>
+                                    <th scope="col">ACCIONES</th>
+                                    <th scope="col">IMAGEN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of registros$ | async; let i = index">
+                                    <td>{{ i+1}} </td>
+                                    <ng-container *ngFor="let col of campos.campos | filterBy: userFilterF">
+                                        <td *ngIf="col.estado !== 'principal' ">{{item[col.nombre] }}
+                                        </td>
+                                    </ng-container>
+                                    <td>
+                                        <button class="btn btn-outline-primary btn-sm mr-2"
+                                            (click)="enableEditing($event, item)">
+                                            <i class="fa fa-pencil"></i> Editar</button>
+                                        <button class="btn btn-outline-danger btn-sm" (click)="deleteRegistro(item)">
+                                            <i class="fa fa-trash"></i> Eliminar</button>
+                                    </td>
+                                    <td>
+                                        <a role="button" class="btn btn-outline-secondary btn-sm" target="_blank" [attr.href]="item.path | safe"><i class="fa fa-camera" aria-hidden="true"></i> Imagen</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </ng-template>
+            </as-split-area>
+        </as-split>
+    </div>
+</ng-container>
+
+<ng-template #loading>
+    <div class="d-flex justify-content-center mt-5">
+        <div class="spinner-border text-primary" role="status"></div>
+        <strong class="text-primary"> Loading... </strong>
+    </div>
+</ng-template>
+
+<ng-template #mensaje>
+    <div class="col-md-12">
+        <div class="alert alert-primary alert-dismissible fade show" role="alert">
+            <strong>Mensaje!</strong> Es necesario crear una plantilla antes de iniciar.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #mensaje2>
+    <div class="col-md-12">
+        <div class="alert alert-primary alert-dismissible fade show" role="alert">
+            <strong>Mensaje!</strong> No existen imágenes para la indexación.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+</ng-template>
+
+<div #myModalEditS class="modal fade" id="myModalEditS" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document" *ngIf="campos$ | async; let temporal;">
+        <div class="modal-content">
+            <form class="form" (ngSubmit)="updateRegistroS(registrotoEdit)">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Editar Registros</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form">
+                        <div *ngFor="let col of temporal.campos| filterBy: userFilterF">
+                            <div class="form-group" *ngIf="col.estado !== 'principal' ">
+                                <label class="col-xs-4 control-label">
+                                    <strong>{{col.nombre}}</strong>
+                                </label>
+                                <div class="col-xs-8">
+                                    <div [ngSwitch]="col.tipo">
+                                        <div *ngSwitchCase="'numerico'">
+                                            <input type="number" class="form-control text-uppercase"
+                                                [(ngModel)]="newObject[col.nombre]"
+                                                [ngModelOptions]="{standalone: true}" />
+                                        </div>
+                                        <div *ngSwitchCase="'fecha'">
+                                            <input type="date" placeholder="dd/mm/yyyy"
+                                                class="form-control text-uppercase" [(ngModel)]="editObject[col.nombre]"
+                                                [ngModelOptions]="{standalone: true}" />
+                                        </div>
+                                        <div *ngSwitchCase="'imagen'">
+                                            <input type="file" class="form-control" [(ngModel)]="editObject[col.nombre]"
+                                                [ngModelOptions]="{standalone: true}">
+                                        </div>
+                                        <div *ngSwitchDefault>
+                                            <input type="text" enter class="form-control"
+                                                oninput="this.value = this.value.toUpperCase()"
+                                                [ngModelOptions]="{standalone: true}"
+                                                [(ngModel)]="editObject[col.nombre]" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button class="btn btn-primary" type="submit">Actualizar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

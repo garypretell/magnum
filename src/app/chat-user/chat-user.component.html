@@ -1,0 +1,35 @@
+<ng-container *ngIf="chat$ | async as chat">
+    <ng-container *ngIf=" auth.user$ | async as user">
+      <div #chatBox class="container-md chat2">
+        <div class="msg animated zoomInUp" *ngFor="let msg of chat.messages; trackBy: trackByCreated">
+          <div class="media w-50" [ngClass]="{'ml-auto mb-3':  msg.uid === user.uid ,
+             'mb-3':  msg.uid !== user.uid }"><img src="{{msg.user?.foto}}" alt="user" width="50"
+              class="rounded-circle">
+            <div class="media-body" [ngClass]="{'ml-3':  msg.uid === user.uid }">
+              <div class="rounded py-2 px-3 mb-2" [ngClass]="{'bg-primary': msg.uid === user.uid,
+                'bg-light':   msg.uid !== user.uid}">
+                <p class="text-small mb-0" [ngClass]="{'text-white': msg.uid === user.uid,
+                  'text-muted': msg.uid !== user.uid}">{{msg.content}} </p>
+              </div>
+              <p class="text-small mb-0 text-muted">{{msg.createdAt | date: 'dd MMM hh:mm'}}</p>
+              <p class="text-white small text-small mb-0"><a *ngIf="msg.uid === user.uid"
+                  (click)="chatService.deleteMessage(chatId,chat, msg)"
+                  class="badge badge-pill badge-danger btn">Eliminar</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form">
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <button (click)="actualizaSalida()"  type="button" class="btn btn-outline-dark" ><i class="fa fa-arrow-left" aria-hidden="true"></i></button>
+          </div>
+          <input #inputEl class="form-control" [(ngModel)]="newMsg" maxlength="100" (keydown.enter)="submit(chat.id)"  >
+          <div class="input-group-append">
+            <button (click)="submit(chat.id)" type="button" class="btn btn-outline-primary" [disabled]="!newMsg">Enviar<i
+                class="fa fa-paper-plane"></i></button>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>

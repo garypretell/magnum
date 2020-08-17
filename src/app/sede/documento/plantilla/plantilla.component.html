@@ -1,0 +1,239 @@
+<div class="breadcrumb d-flex justify-content-between align-items-center mx-5">
+    <ol class="breadcrumb  mb-0 p-0">
+        <li class="breadcrumb-item text-primary"><a role="button" (click)="goSede()">Sede</a></li>
+        <li class="breadcrumb-item text-primary"><a role="button" (click)="goDocumento()">Documento</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Plantilla</li>
+    </ol>
+    <button class="btn btn-sm btn-success" *ngIf="sede">
+        <strong>{{ sede.nombre }} - {{documento}}</strong>
+    </button>
+</div> 
+
+<div class="container-fluid">
+    <ng-container *ngIf="documento$ | async as documento; else loading">
+        <ng-container *ngIf="documento.plantilla; else mensaje">
+            <div class="card-body" *ngIf="campos$ | async as temp; else loading">
+                <ng-container >
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-9">
+                                <div class="col-md-12">
+                                    <div class="shadow alert alert-warning alert-dismissible fade show" role="alert">
+                                        <strong>Importante!</strong> Para modificar el orden de los items agregados,
+                                        haga
+                                        click sobre el ícono 🖐️ <br>
+                                        Arrastre la fila hasta lograr la plantilla deseada. <br>
+                                        Para ingresar campos al documento, haga click en: <span role="button"
+                                            class="badge badge-primary" (click)="showModalS()">Agregar Items</span>
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div *ngIf="(temp.campos).length > 2">
+                                    <table class="table mt-2">
+                                        <thead class="thead">
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Items</th>
+                                                <th>Tipo</th>
+                                                <th class="text-center">Es campo para Búsqueda</th>
+                                                <th class="text-center">Visible</th>
+                                                <th class="text-center">Opciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody dragula="MANY_ITEMS" [(dragulaModel)]='temp.campos'>
+                                            <tr *ngFor="let x of temp.campos | filterBy: searchObjectS; let i = index"
+                                                style="cursor: pointer;">
+                                                <ng-container *ngIf="x.estado !== 'principal'">
+                                                    <td>{{ i-1 }}</td>
+                                                    <td [ngStyle]="{'color':getColor(x.estado)}" class="handle"> 🖐️
+                                                        &nbsp;{{ x.nombre | uppercase }}
+                                                    </td>
+                                                    <td>{{ x.tipo | uppercase }}</td>
+                                                    <td class="text-center">{{ x.busqueda === true ? 'SI' : 'NO' }}</td>
+                                                    <td class="text-center">{{ x.estado === true ? 'SI' : 'NO' }}</td>
+                                                    <td class="text-center">
+                                                        <button class="btn btn-sm btn-outline-danger m-1"
+                                                            (click)="deleteCampoS(x)">
+                                                            <i class="fa fa-trash"></i> Eliminar</button>
+                                                        <button class="btn btn-sm btn-outline-success m-1"
+                                                            (click)="editItem(x)">
+                                                            <i class="fa fa-trash"></i> Editar</button>
+                                                    </td>
+                                                </ng-container>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="alert alert-danger" role="alert">
+                                    <strong>SELECCIONE PLANTILLA(IMAGEN)</strong>
+                                </div>
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="customFileLang" lang="es"
+                                        (change)="uploadFile($event)">
+                                    <label class="custom-file-label mr-2" for="customFileLang"
+                                        data-browse="Seleccionar">
+                                        Plantilla Imágen</label>
+                                </div>
+                                <small class="text-muted">*Diseño de plantilla para un solo registro.</small>
+                                <div *ngIf="uploadPercent | async as pct">
+                                    <progress [value]="pct" max="100"></progress>
+                                    {{ pct | number }}%
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+        </ng-container>
+    </ng-container>
+</div>
+
+<ng-template #mensaje>
+    <div class="container mt-5">
+        <p class="lead"><strong><i>Para continuar con la creacion de su plantilla, deberá añadir los siguientes
+                    campos a su Documento!!</i></strong></p>
+        <div class="">
+            <div class="">
+                <div class="card-header">
+                    <strong> Items Standar ({{ itemList.length }})</strong>
+                </div>
+                <table *ngIf="itemList.length > 0" class="table table-hover">
+                    <thead class="thead">
+                        <tr>
+                            <th>#</th>
+                            <th>Campo</th>
+                            <th>Tipo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let campo of itemList;trackBy: trackByFn ; let i = index">
+                            <td>{{ i+1 }}</td>
+                            <td>{{ campo.nombre | uppercase }}</td>
+                            <td>{{ campo.tipo }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <br>
+        <div class="row justify-content-center">
+            <button class="btn btn-primary" type="button" (click)="itemListSaveS()">Añadir </button>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #loading>
+    <div class="d-flex justify-content-center mt-5">
+        <div class="spinner-border text-info" role="status">
+        </div>
+        <strong class="text-info"> Loading... </strong>
+    </div>
+</ng-template>
+
+<div #myModalS class="modal fade" id="myModalS" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form class="form" [formGroup]="addCampoFormS" (ngSubmit)="addCampoS()">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Agregar Campos</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col">
+                            <label for="proyecto">Nombre:</label>
+
+                            <input type="text" class="form-control text-uppercase" formControlName="nombre"
+                                oninput="this.value = this.value.toUpperCase()">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="tipo">Tipo:</label>
+                            <select class="form-control text-uppercase" id="tipo" name="tipo" formControlName="tipo">
+                                <option selected disabled value="">Seleccione...</option>
+                                <option [value]="d.nombre" *ngFor="let d of tipoArray;trackBy: trackByFn">{{ d.nombre }}
+                                </option>
+                            </select>
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button class="btn btn-primary" type="submit" [disabled]="!addCampoFormS.valid">Guardar </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div #myModalEditS class="modal fade" id="myModalEditS" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form class="form" (ngSubmit)="updateCampoS(campotoEditS)">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Editar Campos</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="row mb-2">
+                        <div class="col">
+                            <label for="nombreEdit">Nombre:</label>
+                            <input type="text" class="form-control text-uppercase" id="nombreEdit" name="nombreEdit"
+                                [(ngModel)]="campotoEditS.nombre" readonly>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col">
+                            <label for="departamentoEdit">Tipo:</label>
+                            <select class="form-control text-uppercase" id="departamentoEdit" name="departamentoEdit"
+                                [(ngModel)]="campotoEditS.tipo">
+                                <option value=""></option>
+                                <option [ngValue]="d.nombre" *ngFor="let d of tipoArray">{{ d.nombre }}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col">
+                            <label for="busqueda">Campo para búsqueda:</label>
+                            <select class="form-control" id="busqueda" name="busqueda"
+                                [(ngModel)]="campotoEditS.busqueda">
+                                <option selected disabled>Seleccione...</option>
+                                <option [ngValue]="true">SI</option>
+                                <option [ngValue]="false">NO</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col">
+                            <label for="nivel">Visible:</label>
+                            <select class="form-control" id="estado" name="estado" [(ngModel)]="campotoEditS.estado">
+                                <option selected disabled>Seleccione...</option>
+                                <option [ngValue]="true">SI</option>
+                                <option [ngValue]="false">NO</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button class="btn btn-primary" type="submit">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

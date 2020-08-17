@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "indexa-7cdf3": {
+      "hosting": {
+        "angular-electron": [
+          "indexa-7cdf3"
+        ]
+      }
+    }
+  }
+}

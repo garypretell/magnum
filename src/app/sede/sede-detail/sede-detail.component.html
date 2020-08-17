@@ -1,0 +1,23 @@
+<div class="content">
+  <div class="mx-auto mt-5" style="width: 20rem;"  *ngIf="(misede$) | async as estaparroquia; else loading">
+    <div class="card text-center shadow-lg">
+        <img src="../../../assets/registra.svg" class="img-fluid" alt="Sede">
+        <div class="card-body">
+            <h5 class="card-title">Sede </h5>
+            <h3>{{estaparroquia.nombre}}</h3>
+        </div>
+        <div class="mb-5">
+          <button type="button" class="btn btn-outline-secondary align-self-center"
+          (click)="goDocumentos(estaparroquia)">Documentos 🖱</button>
+        </div>
+    </div>
+  </div>
+  <ng-template #loading>
+    <div class="d-flex justify-content-center mt-5">
+      <div class="spinner-border text-info" role="status">
+      </div>
+      <strong class="text-info"> Loading... </strong>
+    </div>
+  </ng-template>
+  </div>
+<router-outlet></router-outlet>

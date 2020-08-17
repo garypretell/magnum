@@ -18,8 +18,12 @@ function createWindow(): BrowserWindow {
     width: size.width,
     height: size.height,
     webPreferences: {
+      nativeWindowOpen: true,
+      enableRemoteModule: true,
+      plugins: true,
+      webSecurity: false,
       nodeIntegration: true,
-      allowRunningInsecureContent: (serve) ? true : false,
+      allowRunningInsecureContent: true
     },
   });
 

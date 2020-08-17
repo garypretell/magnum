@@ -1,0 +1,194 @@
+<ng-container *ngIf="campos$ | async as campos; else loading">
+    <div class="breadcrumb d-flex justify-content-between align-items-center">
+        <ol class="breadcrumb mb-0 p-0">
+          <li class="breadcrumb-item text-primary">
+            <a role="button" (click)="goSede()">Sede</a>
+          </li>
+          <li class="breadcrumb-item text-primary">
+            <a role="button" (click)="goDocumentos()">Documentos</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">Búsqueda</li>
+        </ol>
+        <button class="btn btn-sm btn-success" *ngIf="sede">
+          <strong>{{documento}} - {{ sede.nombre }}</strong>
+        </button>
+      </div>
+    <ng-container *ngIf="campos.campos.length > 0; else mensaje" >
+        <div class="mt-4" style="width: 100%; height: 90vh;">
+            <as-split direction="horizontal">
+                <as-split-area size="20" class="contenedor">
+                    <div class="row">
+                        <div class="col">
+                            <div class="shadow card bg-primary text-white text-center m-2">
+                                <h4> Documento {{documento}}</h4>
+                                <small>
+                                    <cite title="Source Title">*Todos los campos son requeridos</cite>
+                                </small>
+                            </div>
+                            <hr class="mx-5">
+                            <form #formcontrol="ngForm" class="needs-validation m-2" novalidate>
+                                <ng-container *ngFor="let data of campos.campos">
+                                    <div class="form-row" *ngIf="data.busqueda == true ">
+                                        <ng-container [ngSwitch]="data.tipo">
+                                            <div dragula="DRAGULA_FACTS" class="w-100">
+                                                <ng-container *ngSwitchCase="'numerico'">
+                                                    <div class="col mb-3" style="cursor: pointer;">
+                                                        <label for="apellidos">{{data.nombre}}</label>
+                                                        <input type="number" class="form-control text-uppercase field-focus"
+                                                            name="{{data.nombre}}" [(ngModel)]="searchObject[data.nombre]"
+                                                            (keyup.enter)="keytab($event)" autofocus required />
+                                                    </div>
+                                                </ng-container>
+                                                <ng-container *ngSwitchCase="'fecha'">
+                                                    <div class="col mb-3" style="cursor: pointer;">
+                                                        <label for="apellidos">{{data.nombre}}</label>
+                                                        <input type="date" placeholder="dd/mm/yyyy"
+                                                            class="form-control text-uppercase field-focus"
+                                                            name="{{data.nombre}}" [(ngModel)]="searchObject[data.nombre]"
+                                                            (keyup.enter)="keytab($event)" autofocus required />
+                                                    </div>
+                                                </ng-container>
+                                                <ng-container *ngSwitchDefault>
+                                                    <div class="col mb-3" style="cursor: pointer;">
+                                                        <label for="apellidos">{{data.nombre}}</label>
+                                                        <input type="text" class="form-control text-uppercase field-focus"
+                                                            oninput="this.value = this.value.toUpperCase()"
+                                                            name="{{data.nombre}}" [(ngModel)]="searchObject[data.nombre]"
+                                                            (keyup.enter)="keytab($event)" autofocus required />
+                                                    </div>
+                                                </ng-container>
+                                            </div>
+                                        </ng-container>
+                                    </div>
+                                </ng-container>
+                                <button (click)="search(searchObject)" class="btn btn-primary btn-lg btn-block"
+                                    [disabled]="!formcontrol.form.valid">Buscar</button>
+                            </form>
+                            <div class="text-primary text-center mt-0">
+                                <small>
+                                    <cite title="Source Title">*Todos los campos son requeridos</cite>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </as-split-area>
+                <as-split-area size="80" class="m-2">
+                    <ng-container *ngIf="registros$ as registros" >
+                        <ng-container *ngIf="registros.length > 0; else mensaje2" >
+                            <div class="table-responsive">
+                                <table class="table table-hover mt-3 text-center">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col" *ngFor="let column of campos.campos | filterBy: userFilterF">
+                                                {{column.nombre | uppercase}}
+                                            </th>
+                                            <th scope="col" *ngIf="auth.canDelete(auth.user$ | async)">ACCIONES</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr
+                                            *ngFor="let item of registros  | filterBy: searchObject | paginate: { itemsPerPage: 10, currentPage: p }; let i = index">
+                                            <td>{{ 10 * (p -1) + i + 1}} </td>
+                                            <td *ngFor="let col of campos.campos | filterBy: userFilterF">
+                                                {{item[col.nombre] }}
+                                            </td>
+                                            <td *ngIf="auth.canDelete(auth.user$ | async)">
+                                                <button class="btn btn-outline-primary btn-sm m-1" 
+                                                    (click)="enableEditing($event, item)" *ngIf="auth.canDelete(auth.user$ | async)">
+                                                    <i class="fa fa-pencil"></i> Editar</button>
+            
+                                                <button class="btn btn-outline-danger btn-sm m-1" (click)="deleteRegistro(item)">
+                                                    <i class="fa fa-trash"></i> Eliminar</button>
+                                                    <a role="button" class="btn btn-outline-secondary btn-sm" target="_blank"  [attr.href]="item.path | safe"><i class="fa fa-camera" aria-hidden="true"></i> Imagen</a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <pagination-controls (pageChange)="p = $event" *ngIf="registros.length > 0">
+                                </pagination-controls>
+                            </div>
+                        </ng-container> 
+                        <div #myModalEditS class="modal fade" id="myModalEditS" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document" *ngIf="campos.campos as temporal;">
+          <div class="modal-content">
+            <form class="form" (ngSubmit)="updateRegistro()">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Editar Registros</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form class="form-horizontal" role="form">
+                  <div *ngFor="let col of temporal| filterBy: userFilterF">
+                    <div class="form-group" *ngIf="col.estado !== 'principal' ">
+                      <label class="col-xs-4 control-label">
+                        <strong>{{col.nombre}}</strong>
+                      </label>
+                      <div class="col-xs-8">
+                        <div [ngSwitch]="col.tipo">
+                          <div *ngSwitchCase="'numerico'">
+                            <input type="number" class="form-control text-uppercase" [(ngModel)]="editObject[col.nombre]"
+                              [ngModelOptions]="{standalone: true}" />
+                          </div>
+                          <div *ngSwitchCase="'fecha'">
+                            <input type="date" placeholder="dd/mm/yyyy" class="form-control text-uppercase"
+                              [(ngModel)]="editObject[col.nombre]" [ngModelOptions]="{standalone: true}" />
+                          </div>
+                          <div *ngSwitchCase="'imagen'">
+                            <input type="file" class="form-control" [(ngModel)]="editObject[col.nombre]"
+                              [ngModelOptions]="{standalone: true}">
+                          </div>
+                          <div *ngSwitchDefault>
+                            <input type="text" enter class="form-control"
+                              oninput="this.value = this.value.toUpperCase()" [ngModelOptions]="{standalone: true}"
+                              [(ngModel)]="editObject[col.nombre]" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button class="btn btn-primary" type="submit">Actualizar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>             
+                    <ng-template #mensaje2>
+                        <div class="alert alert-warning" role="alert">
+                            No existen datos para esta búsqueda!
+                          </div>
+                    </ng-template>
+                    </ng-container>
+                </as-split-area>
+            </as-split>
+        </div>
+    </ng-container>
+</ng-container>
+
+<ng-template #loading>
+    <div class="d-flex justify-content-center mt-5">
+        <div class="spinner-border text-primary" role="status"></div>
+        <strong class="text-primary"> Loading... </strong>
+    </div>
+</ng-template>
+
+<ng-template #mensaje>
+    <div class="col-md-12">
+        <div class="alert alert-primary alert-dismissible fade show" role="alert">
+            <strong>Mensaje!</strong> Es necesario crear una plantilla y asignar campos para la búsqueda antes de
+            iniciar.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+</ng-template>
+
+<app-imprimir-registro></app-imprimir-registro>

@@ -1,0 +1,87 @@
+<div class="container-fluid">
+    <div class="breadcrumb d-flex justify-content-between align-items-center">
+        <ol class="breadcrumb mb-0 p-0">
+            <li class="breadcrumb-item text-primary">
+                <a role="button" (click)="goSede()">Home</a>
+            </li>
+            <li class="breadcrumb-item text-primary">
+                <a role="button" (click)="goDocumento()">Documentos</a>
+            </li>
+            <li class="breadcrumb-item text-primary">
+                <a role="button" (click)="goLibro()">Libros</a>
+            </li>
+            <li class="breadcrumb-item text-primary" aria-current="page">
+                <a role="button" (click)="goMiLibro()">{{ milibro }}</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">Imágenes</li>
+
+        </ol>
+        <button class="btn btn-sm btn-success">
+            <strong>{{ documento }}</strong>
+        </button>
+    </div>
+    <div class="row">
+        <div class="col-md-4 mt-5">
+            <div class="custom-file mb-3">
+                <input #selectFile type="file" class="custom-file-input" id="customFileLang" lang="es"
+                    (change)="selectFiles($event)" multiple>
+                <label class="custom-file-label mr-2" for="customFileLang" data-browse="Seleccionar">Registrar Imágenes
+                </label>
+            </div>
+            <button class="btn btn-success" [disabled]="!selectedFiles" (click)="uploadFiles()">
+                Registrar <i class="fa fa-cloud-upload" aria-hidden="true"></i>
+            </button>
+            <hr>
+            <div class="card" *ngIf="visible; else mensaje">
+                <div class="card-header">Progreso...</div>
+                <div *ngFor="let progressInfo of progressInfos" class="mb-2">
+                    <span>{{ progressInfo.fileName }}</span>
+                    <div class="progress" *ngIf="uploadPercent | async as pct">
+                        <div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar"
+                            attr.aria-valuenow="{{ pct  }}" aria-valuemin="0" aria-valuemax="100"
+                            [ngStyle]="{ width: pct  + '%' }">
+                            {{ pct | number }}%
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8 mt-5">
+            <ng-container *ngIf="misimagenes$ | async  as misimagenes; else mensaje2">
+                <div class="card" *ngIf="misimagenes?.imagenes.length > 0; else mensaje2">
+                    <div class="card-header">Lista de Imágenes</div>
+                    <div dragula="MANY_ITEMS" [(dragulaModel)]='misimagenes.imagenes'>
+                        <ul class="list-group list-group-flush" *ngFor="let file of misimagenes?.imagenes">
+                            <li class="list-group-item">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <a target="_blank" [attr.href]="file.path | safe">{{ file.name }}</a>
+                                    <button class="btn btn-outline-danger btn-sm" (click)="deleteImagen(file)" >Eliminar</button>
+                                </div>
+                                <hr class=" mt-1 mb-0">
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+</div>
+
+<ng-template #mensaje>
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>Mensaje!</strong> Seleccione las imágenes que serán almacenadas en la nube (pertenecientes a este libro)
+        y luego haga click en el botón <strong>Upload</strong>.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+</ng-template>
+<ng-template #mensaje2>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>Importante!</strong> Actualmente no cuenta con ninguna imagen almacenada en la nube perteneciente a este
+        Libro.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+</ng-template>
