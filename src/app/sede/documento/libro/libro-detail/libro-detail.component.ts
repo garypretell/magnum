@@ -20,6 +20,7 @@ export class LibroDetailComponent implements OnInit, OnDestroy {
   private unsubscribe$ = new Subject();
   searchObject: any = {};
   userFilterF: any = { estado: 'true' };
+  userFilterV: any = { visible: 'true' };
   newObject: any = {};
   editObject: any = {};
   miproyecto: any;
@@ -48,7 +49,7 @@ export class LibroDetailComponent implements OnInit, OnDestroy {
       this.miproyecto = params.get('p');
       this.misede = params.get('s');
       this.documento = params.get('d');
-      this.midocumento = this.misede + '_' + this.documento;
+      this.midocumento = this.miproyecto + '_' + this.documento;
       this.milibro = params.get('l');
       this.miruta = this.midocumento + '_' + this.milibro;
       this.verifyData(this.miruta);
@@ -79,19 +80,19 @@ export class LibroDetailComponent implements OnInit, OnDestroy {
           Swal.fire({
             icon: 'error',
             title: 'Oops...',
-            text: 'Este Libro no ha sido registrado!'
+            text: 'This Book has not been registered!'
           });
           this.goLibro();
         }
       });
   }
 
-  goSede() {
-    this.router.navigate(['/proyecto', this.miproyecto, 'sede', this.misede]);
+  goHome() {
+    this.router.navigate(['/Home']);
   }
 
   goDocumento() {
-    this.router.navigate(['/proyecto', this.miproyecto, 'sede', this.misede, 'documentos']);
+    this.router.navigate(['/proyecto', this.miproyecto, 'documents']);
   }
 
   goLibro() {
@@ -131,26 +132,26 @@ export class LibroDetailComponent implements OnInit, OnDestroy {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: 'No existen un modelo de plantilla en el sistema, agregue uno!'
+        text: 'There is no template model in the system, add one!'
       });
     }
   }
 
   deleteRegistro(registro) {
     Swal.fire({
-      title: 'Esta seguro de eliminar este Registro?',
+      title: 'Are you sure to delete this Record?',
       icon: 'warning',
       showCancelButton: true,
-      cancelButtonText: 'Cancelar',
+      cancelButtonText: 'Cancel',
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Si, Eliminar!'
+      confirmButtonText: 'Yes, Delete!'
     }).then((result) => {
       if (result.value) {
         this.afs.doc(`Registros/${registro.id}`).delete();
         Swal.fire(
-          'Eliminado!',
-          'El registro ha sido eliminado.',
+          'Deleted!',
+          'Record has been deleted.',
           'success'
         );
       }

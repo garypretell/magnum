@@ -1,0 +1,13 @@
+.contenedor {
+    max-height: calc(100vh - 470px);;
+    overflow-y: auto;
+  }
+  
+  .contenedor::-webkit-scrollbar {
+      width: 7px;
+  }
+  .contenedor::-webkit-scrollbar-thumb {
+      background: #80a53b;
+      border-radius: 5px;
+  }
+  

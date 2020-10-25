@@ -1,15 +1,15 @@
 <ng-container *ngIf="sedes$ | async as sedes">
     <div class="col-md-8 offset-md-2 mt-5">
         <div class="shadow-lg card">
-            <h5 class="card-header bg-primary text-white">Administrar Sedes</h5>
+            <h5 class="card-header bg-primary text-white">Manage Locations</h5>
             <div class="card-body">
                 <div class="d-flex w-100 justify-content-between">
-                    <h5 class="card-title">Sedes</h5>
-                    <button type="button" class="btn btn-outline-primary" (click)="show_addModal()">Agregar Sede
+                    <h5 class="card-title">Locations</h5>
+                    <button type="button" class="btn btn-outline-primary" (click)="show_addModal()">New Location
                     </button>
                 </div>
-                <p class="card-text">Listado de sedes pertenecientes a su proyecto.</p>
-                <input type="search" class="form-control text-uppercase mb-3" placeholder="Buscar Sede"
+                <p class="card-text">List of locations belonging to your project.</p>
+                <input type="search" class="form-control mb-3" placeholder="Search Location"
                     [(ngModel)]="searchObject.nombre" />
                 <div class="list-group altura">
                     <div *ngFor="let sede of sedes | filterBy: searchObject">
@@ -18,20 +18,20 @@
                                 <h5 class="mb-1" [ngStyle]="{'color':getColor(sede.estado)}">{{ sede.nombre }}</h5>
                                 <form class="form-inline">
                                     <span role="button" class="badge badge-danger align-self-center mr-3"
-                                        (click)="deleteSede(sede)">Eliminar</span>
+                                        (click)="deleteSede(sede)">Delete</span>
                                     <span role="button" class="badge badge-primary align-self-center"
-                                        (click)="editSede(sede)">Editar</span>
+                                        (click)="editSede(sede)">Edit</span>
                                 </form>
                             </div>
                             <div class="d-flex w-100 justify-content-between">
                                 <form class="form-inline">
-                                    <button (click)="goDocumentos(sede)" type="button"
+                                    <!-- <button (click)="goDocumentos(sede)" type="button"
                                         class="btn btn-outline-info btn-sm mr-2">
                                         Documentos
-                                    </button>
+                                    </button> -->
                                     <button type="button" class="btn btn-outline-secondary btn-sm"
                                         (click)="goUsuario(sede)">
-                                        Usuarios
+                                        Users
                                     </button>
                                 </form>
                             </div>
@@ -56,7 +56,7 @@ aria-hidden="true">
     <div class="modal-content">
         <form class="form" [formGroup]="addSedeForm">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Agregar Sede</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Add Location</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -64,14 +64,14 @@ aria-hidden="true">
             <div class="modal-body">
                 <div class="row mb-3">
                     <div class="col">
-                        <label for="nombre1">Nombre Sede:</label>
+                        <label for="nombre1">Location Name:</label>
                         <input type="text" class="form-control text-uppercase" id="nombre1" name="nombre1"
                             formControlName="nombre" oninput="this.value = this.value.toUpperCase()">
                     </div>
                 </div>
                 <div class="row mb-3">
                     <div class="col">
-                        <label for="nivel">Es Administrador del Sistema?</label>
+                        <label for="nivel">is Admin?</label>
                         <select class="form-control" formControlName="secretariaGeneral">
                             <option selected disabled>Seleccione...</option>
                             <option [ngValue]="true">Si</option>
@@ -81,8 +81,8 @@ aria-hidden="true">
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                <button class="btn btn-primary" (click)="addSede()"  [disabled]="!addSedeForm.valid">Guardar </button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button class="btn btn-primary" (click)="addSede()"  [disabled]="!addSedeForm.valid">Save </button>
             </div>
         </form>
     </div>
@@ -94,7 +94,7 @@ aria-hidden="true">
     <div class="modal-content">
         <form class="form" (ngSubmit)="updateSede(sedetoEdit)">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Editar Sede</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Edit Location</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -102,17 +102,17 @@ aria-hidden="true">
             <div class="modal-body">
                 <div class="row mb-3">
                     <div class="col">
-                        <label for="nombreEdit2">Sede:</label>
+                        <label for="nombreEdit2">Location:</label>
                         <input type="text" class="form-control text-uppercase" id="nombreEdit2" name="nombreEdit2"
                             [(ngModel)]="sedetoEdit.nombre" readonly>
                     </div>
                 </div>
                 <div class="row mb-3">
                     <div class="col">
-                        <label for="secre">Es administrador del proyecto?</label>
+                        <label for="secre">is Admin?</label>
                         <select class="form-control" id="secre" name="secre"
                             [(ngModel)]="sedetoEdit.principal">
-                            <option [ngValue]="true">Si</option>
+                            <option [ngValue]="true">Yes</option>
                             <option [ngValue]="false">No</option>
 
                         </select>
@@ -120,17 +120,17 @@ aria-hidden="true">
                 </div>
                 <div class="row mb-3">
                     <div class="col">
-                        <label for="estado">Estado:</label>
+                        <label for="estado">State:</label>
                         <select class="form-control" id="estado" name="estado" [(ngModel)]="sedetoEdit.estado">
-                            <option [ngValue]="true">Activo</option>
-                            <option [ngValue]="false">Inactivo</option>
+                            <option [ngValue]="true">Active</option>
+                            <option [ngValue]="false">Inactive</option>
                         </select>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                <button class="btn btn-primary" type="submit">Guardar cambios</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button class="btn btn-primary" type="submit">Save</button>
             </div>
         </form>
     </div>

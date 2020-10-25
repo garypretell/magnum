@@ -5,16 +5,20 @@ import { ProyectoComponent } from './components/proyecto.component';
 import {NgxPaginationModule} from 'ngx-pagination';
 import { FilterPipeModule } from 'ngx-filter-pipe';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DocumentComponent } from './document/document.component';
+import { ProyectoDetailComponent } from './proyecto-detail/proyecto-detail.component';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 @NgModule({
-  declarations: [ProyectoComponent],
+  declarations: [ProyectoComponent, DocumentComponent, ProyectoDetailComponent],
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
     NgxPaginationModule,
     FilterPipeModule,
-    ProyectoRoutingModule
+    ProyectoRoutingModule,
+    NgxChartsModule,
   ]
 })
 export class ProyectoModule { }

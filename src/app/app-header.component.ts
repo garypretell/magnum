@@ -86,7 +86,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
       if (data) {
         const proyecto = data.proyecto;
         const sede = data.sede;
-        return this.router.navigate(['/proyecto', proyecto.id, 'sede', sede.id, 'documentos']);
+        return this.router.navigate(['/proyecto', proyecto.id, 'documents']);
       } else {
         return of(null);
       }

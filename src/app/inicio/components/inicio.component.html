@@ -1,20 +1,18 @@
-<body *ngIf="(auth.user$) | async; else loading">
+<body *ngIf="(auth.user$) | async as user; else loading">
   <div
-    *ngIf="!auth.canSuper(auth.user$ | async) && !auth.canDelete(auth.user$ | async) &&  !auth.canEdit(auth.user$ | async); else principal">
-
-      <div class="shadow container card mt-5 mb-5">
-        <div class="card-body">
-          <h5 class="card-title">Comuníquese con su administador para que se le asignen los permisos...</h5>
-          <p class="card-text">
-            <strong>SINDEX</strong>, le permite registrar de forma ilimitada los diferentes registros que contenga su fondo documentario.
-          </p>
-          <button (click)="goLogin()" class="btn btn-primary">
-            Go Login
-          </button>
-        </div>
+    *ngIf="!user.roles.editor; else principal">
+    <div class="shadow container card mt-5 mb-5">
+      <div class="card-body">
+        <h5 class="card-title">Comuníquese con su administador para que se le asignen los permisos...</h5>
+        <p class="card-text">
+          <strong>MAGNUM</strong>, le permite registrar de forma ilimitada los diferentes registros que contenga su
+          fondo documentario.
+        </p>
+        <button (click)="goLogin()" class="btn btn-primary">
+          Go Login
+        </button>
       </div>
-
-    
+    </div>
     <div class="shadow container bg-light mt-5">
       <div class="row m-2">
         <div class="col-md-6 topmargin-sm">
@@ -70,9 +68,10 @@
                     obligatorios.</small>
                 </div>
               </div>
-  
+
               <div class="col-md-12 mb-4">
-                <button class="btn btn-dark full-width" (click)="alerta()" [disabled]="!pedidosForm.valid">Enviar</button>
+                <button class="btn btn-dark full-width" (click)="alerta()"
+                  [disabled]="!pedidosForm.valid">Enviar</button>
               </div>
             </div>
           </form>
@@ -86,25 +85,27 @@
         <div class="col-md-3 mb-2">
           <div class="row justify-content-between">
             <div class="col-4">
-              <p><strong>Sedes</strong></p>
+              <p><strong>Location</strong></p>
             </div>
             <div class="col-5 text-right" *ngIf="isAdmin">
-              <a role="button" (click)="administrar()"  class="badge badge-primary text-white" *ngIf="auth.canDelete(auth.user$ | async)" ><i class="fa fa-file-o" aria-hidden="true" > </i> Administrar
+              <a role="button" (click)="administrar()" class="badge badge-primary text-white"
+                *ngIf="auth.canDelete(auth.user$ | async)"><i class="fa fa-file-o" aria-hidden="true"> </i> Admin
               </a>
             </div>
           </div>
-          <input type="search" class="form-control text-uppercase mb-3" placeholder="Buscar Sedes"
+          <input type="search" class="form-control  mb-3" placeholder="Search Location"
             [(ngModel)]="searchDoc.nombre" />
           <ng-container *ngIf="sede$ | async as sedes; else loading">
             <div class="col-md-11 modal-body2">
               <div class="media" *ngFor="let sede of sedes | filterBy: searchDoc">
                 <div class="media-body">
                   <div class="d-flex w-100 justify-content-between">
-                    <small  [ngStyle]="{ color: getColor(sede.estado) }">
+                    <small [ngStyle]="{ color: getColor(sede.estado) }">
                       <i class="fa fa-file-text-o" aria-hidden="true"></i>
                       <strong> {{ sede.nombre | uppercase }}</strong>
                     </small>
-                    <span role="button" class="badge badge-info align-self-center"  *ngIf="auth.canDelete(auth.user$ | async)" (click)="showCodigo(sede)" >Código</span>
+                    <span role="button" class="badge badge-info align-self-center"
+                      *ngIf="auth.canDelete(auth.user$ | async)" (click)="showCodigo(sede)"><i class="fa fa-address-card"></i></span>
                   </div>
                   <p></p>
                   <hr />
@@ -113,22 +114,22 @@
             </div>
           </ng-container>
           <hr />
-          <h6>¿Qué documentos debo agregar?</h6>
+          <h6>About Magnum...</h6>
           <p class="text-muted small mt-3">
-            <strong>SINDEX </strong>trabaja con plantillas personalizadas
-            adecuadas para cada tipo de documento.
+            <strong>MAGNUM </strong>works with custom templates suitable for each type of document.
           </p>
           <p class="text-muted small mt-0">
-            Si desea agregar un nuevo documento, usted deberá crear su propia
-            plantilla siguiendo estos pasos:
+            If you want to add a new document, you must create your own
+            template, click to start:
           </p>
-          <button type="button" class="btn btn-outline-primary btn-sm" (click)="goDocumento()" >
-            Mis Documentos...
+          <button type="button" class="btn btn-outline-primary btn-sm" (click)="goDocumento()">
+            Documents...
           </button>
+          <hr>
           <div class="shadow alert alert-warning alert-dismissible fade show mt-3" role="alert">
-            <strong>Importante!</strong> Antes de iniciar, usted puede descargar el manual de usuario.
-              <a href="#" class="badge badge-primary">Descargar</a>
-       
+            <strong>Important!</strong> Before starting, you can download the user manual.
+            <a href="#" class="badge badge-primary">Download</a>
+
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -140,91 +141,40 @@
             <em> {{ proyecto?.nombre | uppercase }}</em>
           </h4>
           <ng-container *ngIf="midata | async as data; else loading">
-            <ngx-charts-advanced-pie-chart  [view]="view" [results]="data"
-            (select)="onSelect($event)" (activate)="onActivate($event)" (deactivate)="onDeactivate($event)">
-          </ngx-charts-advanced-pie-chart>
+            <ngx-charts-advanced-pie-chart [view]="view" [results]="data" (select)="onSelect($event)"
+              (activate)="onActivate($event)" (deactivate)="onDeactivate($event)" (window:resize)="onResize($event)">
+            </ngx-charts-advanced-pie-chart>
           </ng-container>
-          
+
           <hr />
           <div class="row">
             <div class="col-12">
-              <div class="shadow card mb-5">
+              <div class="shadow card mb-3">
                 <div class="card-body">
-                  <h5 class="card-title">Seleccione una sede e inicie...</h5>
-                  <p class="card-text">
-                    <strong>SINDEX</strong>, le permite crear de forma ilimitada
-                    diferentes anexos para su proyecto.
-                  </p>
-                  <button (click)="goSede()" class="btn btn-primary">
-                    Mi Proyecto
-                  </button>
+                  <h5 class="card-title">Select a category...</h5>
+                  <hr>
+                  <div class="row row-cols-1 row-cols-md-4 ">
+                    <div class="col mb-4 ">
+                      <div role="button" class="card h-100 shadow-sm bg-success" (click)="goFs()" >
+                         <div class="card-body justify-content-center">
+                          <h5 class="card-title text-white"><i class="fa fa-folder-open mr-1" aria-hidden="true"></i>RECORDS FAMILYSEARCH</h5>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col mb-4">
+                      <div role="button" class="card h-100 shadow-sm bg-primary" (click)="goDocumento()">
+                         <div class="card-body ">
+                          <h5 class="card-title text-white"><i class="fa fa-folder-open mr-1" aria-hidden="true"></i>NEW RECORDS </h5>
+                        </div>
+                      </div>
+                    </div>
+                   </div>
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       </div>
-      <!-- <div class="row">
-        <div class="col-md-3 mb-2">
-          <h5 class="mt-2"><strong>Bienvenido: </strong>{{displayName}}</h5>
-          <hr>
-          <h6>¿Qué documentos debo agregar?</h6>
-          <p class="text-muted small mt-3">
-            <strong>SINDEX </strong>trabaja con plantillas personalizadas
-            adecuadas para cada tipo de documento.
-          </p>
-          <p class="text-muted small mt-0">
-            Si desea agregar un nuevo documento, usted deberá crear su propia
-            plantilla siguiendo estos pasos:
-          </p>
-          <button type="button" class="btn btn-outline-primary btn-sm" (click)="goDocumento()" >
-            Mis Documentos...
-          </button>
-
-          <hr>
-          <div class="shadow alert alert-warning alert-dismissible fade show" role="alert">
-            <strong>Importante!</strong> Antes de iniciar, usted puede descargar el manual de usuario.
-              <a href="#" class="badge badge-primary">Descargar</a>
-       
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-        </div>
-        <div class="col-md-9 mb-3 bg-light">
-          <br />
-          <h4>
-            <em>Avance del Proyecto</em>
-          </h4>
-          <ng-container *ngIf="midata | async as data; else loading">
-            <ngx-charts-advanced-pie-chart  [view]="view" [results]="data"
-            (select)="onSelect($event)" (activate)="onActivate($event)" (deactivate)="onDeactivate($event)">
-          </ngx-charts-advanced-pie-chart>
-          </ng-container>
-          
-          <hr />
-          <div class="row">
-            <div class="col-12">
-              <div class="shadow card mb-5">
-                <div class="card-body">
-                  <h5 class="card-title">Seleccione una sede e inicie...</h5>
-                  <p class="card-text">
-                    <strong>SINDEX</strong>, le permite crear de forma ilimitada
-                    diferentes anexos para su proyecto.
-                  </p>
-                  <button (click)="goSede()" class="btn btn-primary">
-                    Mi Proyecto
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div class="col-4">
-              
-            </div>
-          </div>
-        </div>
-      </div> -->
     </div>
   </ng-template>
 

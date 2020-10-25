@@ -1,0 +1,98 @@
+<ng-container *ngIf="campos$ | async as campos">
+    <div style="height: 90vh;">
+        <as-split direction="horizontal">
+            <as-split-area [size]="20" class="contenedor">
+                <div class="row">
+                    <div class="col">
+                        <div class="shadow card bg-primary text-white text-center m-2">
+                            <h4> {{documento}}</h4>
+                            <small>
+                                <cite title="Source Title">*All fields are required</cite>
+                            </small>
+                        </div>
+                        <hr class="mx-5">
+                        <form #formcontrol="ngForm" class="needs-validation m-2" novalidate>
+                            <ng-container *ngFor="let data of campos.campos">
+                                <div class="form-row" *ngIf="data.estado == true ">
+                                    <ng-container [ngSwitch]="data.tipo">
+                                        <div dragula="DRAGULA_FACTS" class="w-100">
+                                            <ng-container *ngSwitchCase="'numerico'">
+                                                <div class="col mb-3" style="cursor: pointer;">
+                                                    <label for="apellidos">{{data.nombre}}</label>
+                                                    <input type="number" class="form-control text-uppercase field-focus"
+                                                        name="{{data.id}}" [(ngModel)]="newObject[data.id]"
+                                                        (keyup.enter)="keytab($event)" autofocus required />
+                                                </div>
+                                            </ng-container>
+                                            <ng-container *ngSwitchCase="'fecha'">
+                                                <div class="col mb-3" style="cursor: pointer;">
+                                                    <label for="apellidos">{{data.nombre}}</label>
+                                                    <input type="date" placeholder="dd/mm/yyyy"
+                                                        class="form-control text-uppercase field-focus"
+                                                        name="{{data.id}}" [(ngModel)]="newObject[data.id]"
+                                                        (keyup.enter)="keytab($event)" autofocus required />
+                                                </div>
+                                            </ng-container>
+                                            <ng-container *ngSwitchDefault>
+                                                <div class="col mb-3" style="cursor: pointer;">
+                                                    <label for="apellidos">{{data.nombre}}</label>
+                                                    <input type="text" class="form-control text-uppercase field-focus"
+                                                        oninput="this.value = this.value.toUpperCase()"
+                                                        name="{{data.id}}" [(ngModel)]="newObject[data.id]"
+                                                        (keyup.enter)="keytab($event)" autofocus required />
+                                                </div>
+                                            </ng-container>
+                                        </div>
+                                    </ng-container>
+                                </div>
+                            </ng-container>
+                            <button (click)="add()" class="btn btn-primary btn-lg btn-block"
+                                [disabled]="!formcontrol.form.valid">Next</button>
+                        </form>
+                        <div class="text-primary text-center mt-0">
+                            <small>
+                                <cite title="Source Title">*All fields are required</cite>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </as-split-area>
+            <as-split-area [size]="80">
+                <ng-container>
+                    <div class="m-1">
+                        <div class="breadcrumb d-flex justify-content-between align-items-center">
+                            <ol class="breadcrumb  mb-0 p-0">
+                                <li class="breadcrumb-item text-primary"><a role="button" (click)="goHome()">Home</a>
+                                </li>
+                                <li class="breadcrumb-item text-primary"><a role="button" (click)="goList()">Folder
+                                        List</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Evaluate</li>
+                            </ol>
+                        </div>
+                        <div>
+                            <app-image-viewer class="watermark" [images]="[image]" [loadOnInit]="true"
+                                [idContainer]="'idOnHTML'" [showOptions]="true"></app-image-viewer>
+                        </div>
+                    </div>
+
+                </ng-container>
+            </as-split-area>
+        </as-split>
+    </div>
+</ng-container>
+<ng-template #loading>
+    <div class="d-flex justify-content-center mt-5">
+        <div class="spinner-border text-primary" role="status"></div>
+        <strong class="text-primary"> Loading... </strong>
+    </div>
+</ng-template>
+<ng-template #mensaje2>
+    <div class="col-md-12">
+        <div class="alert alert-primary alert-dismissible fade show" role="alert">
+            <strong>Mensaje!</strong> No existen imágenes para la indexación.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+</ng-template>

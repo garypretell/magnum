@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import * as firebase from 'firebase/app';
 
 import { Observable, of, from, BehaviorSubject } from 'rxjs';
-import { switchMap, map, first } from 'rxjs/operators';
+import { switchMap, map, first, take } from 'rxjs/operators';
 import { User } from './user';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { auth, firestore } from 'firebase/app';
@@ -72,7 +72,7 @@ export class AuthService {
   }
 
   getUser() {
-    return this.user$.pipe(first()).toPromise();
+    return this.user$.pipe(take(1)).toPromise();
   }
 
   async signOut() {
@@ -82,7 +82,7 @@ export class AuthService {
   private updateUserData(user) {
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(`usuarios/${user.uid}`);
     const data: any = {
-      lastSesion: firebase.firestore.FieldValue.serverTimestamp(),
+      lastSesion:  Date.now(),
       uid: user.uid,
       email: user.email,
       emailVerified: user.emailVerified,
@@ -102,11 +102,11 @@ export class AuthService {
       displayName: usuario.displayName,
       email: usuario.email,
       estado: true,
-      proyecto:  {
+      proyecto: {
         id: usuario.proyecto,
         nombre: proyecto
       },
-      sede:  {
+      sede: {
         id: usuario.sede,
         nombre: sede
       },
@@ -118,11 +118,17 @@ export class AuthService {
       }
     };
     await this.afs.doc(`Proyecto/${usuario.proyecto}`).update({
-      usuarios: firestore.FieldValue.arrayUnion({ uid: user.uid, displayName: usuario.displayName,
-      proyecto: data.proyecto, sede: data.sede, admin: false})});
+      usuarios: firestore.FieldValue.arrayUnion({
+        uid: user.uid, displayName: usuario.displayName,
+        proyecto: data.proyecto, sede: data.sede, admin: false
+      })
+    });
     await this.afs.doc(`Sede/${usuario.sede}`).update({
-      usuarios: firestore.FieldValue.arrayUnion({ uid: user.uid, displayName: usuario.displayName,
-      sede: data.sede})});
+      usuarios: firestore.FieldValue.arrayUnion({
+        uid: user.uid, displayName: usuario.displayName,
+        sede: data.sede
+      })
+    });
     return usuarioRef.set(data);
   }
 

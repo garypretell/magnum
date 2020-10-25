@@ -1,12 +1,9 @@
 <div class="breadcrumb d-flex justify-content-between align-items-center mx-5">
     <ol class="breadcrumb  mb-0 p-0">
-        <li class="breadcrumb-item text-primary"><a role="button" (click)="goSede()">Sede</a></li>
-        <li class="breadcrumb-item text-primary"><a role="button" (click)="goDocumento()">Documento</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Plantilla</li>
+        <li class="breadcrumb-item text-primary"><a role="button" (click)="goHome()">Home</a></li>
+        <li class="breadcrumb-item text-primary"><a role="button" (click)="goDocumento()">Documents</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Template</li>
     </ol>
-    <button class="btn btn-sm btn-success" *ngIf="sede">
-        <strong>{{ sede.nombre }} - {{documento}}</strong>
-    </button>
 </div> 
 
 <div class="container-fluid">
@@ -19,12 +16,10 @@
                             <div class="col-md-9">
                                 <div class="col-md-12">
                                     <div class="shadow alert alert-warning alert-dismissible fade show" role="alert">
-                                        <strong>Importante!</strong> Para modificar el orden de los items agregados,
-                                        haga
-                                        click sobre el ícono 🖐️ <br>
-                                        Arrastre la fila hasta lograr la plantilla deseada. <br>
-                                        Para ingresar campos al documento, haga click en: <span role="button"
-                                            class="badge badge-primary" (click)="showModalS()">Agregar Items</span>
+                                        <strong>Important!</strong> To modify the order of the added items, make click on the icon 🖐️ <br>
+                                        Drag the row to the desired template. <br>
+                                        To enter fields in the document, click here: <span role="button"
+                                            class="badge badge-primary" (click)="showModalS()">Add Items</span>
                                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
@@ -36,10 +31,11 @@
                                             <tr>
                                                 <th>#</th>
                                                 <th>Items</th>
-                                                <th>Tipo</th>
-                                                <th class="text-center">Es campo para Búsqueda</th>
-                                                <th class="text-center">Visible</th>
-                                                <th class="text-center">Opciones</th>
+                                                <th>Type</th>
+                                                <th class="text-center">Search Field?</th>
+                                                <th class="text-center">Active?</th>
+                                                <th class="text-center">Visible?</th>
+                                                <th class="text-center">Options</th>
                                             </tr>
                                         </thead>
                                         <tbody dragula="MANY_ITEMS" [(dragulaModel)]='temp.campos'>
@@ -51,15 +47,16 @@
                                                         &nbsp;{{ x.nombre | uppercase }}
                                                     </td>
                                                     <td>{{ x.tipo | uppercase }}</td>
-                                                    <td class="text-center">{{ x.busqueda === true ? 'SI' : 'NO' }}</td>
-                                                    <td class="text-center">{{ x.estado === true ? 'SI' : 'NO' }}</td>
+                                                    <td class="text-center">{{ x.busqueda === true ? 'YES' : 'NO' }}</td>
+                                                    <td class="text-center">{{ x.estado === true ? 'YES' : 'NO' }}</td>
+                                                    <td class="text-center">{{ x.visible === true ? 'YES' : 'NO' }}</td>
                                                     <td class="text-center">
                                                         <button class="btn btn-sm btn-outline-danger m-1"
                                                             (click)="deleteCampoS(x)">
-                                                            <i class="fa fa-trash"></i> Eliminar</button>
+                                                            <i class="fa fa-trash"></i> Delete</button>
                                                         <button class="btn btn-sm btn-outline-success m-1"
                                                             (click)="editItem(x)">
-                                                            <i class="fa fa-trash"></i> Editar</button>
+                                                            <i class="fa fa-trash"></i> Edit</button>
                                                     </td>
                                                 </ng-container>
                                             </tr>
@@ -69,16 +66,16 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="alert alert-danger" role="alert">
-                                    <strong>SELECCIONE PLANTILLA(IMAGEN)</strong>
+                                    <strong>CHOOSE TEMPLATE(IMAGE)</strong>
                                 </div>
                                 <div class="custom-file">
                                     <input type="file" class="custom-file-input" id="customFileLang" lang="es"
                                         (change)="uploadFile($event)">
                                     <label class="custom-file-label mr-2" for="customFileLang"
-                                        data-browse="Seleccionar">
-                                        Plantilla Imágen</label>
+                                        data-browse="Choose...">
+                                        Image Template</label>
                                 </div>
-                                <small class="text-muted">*Diseño de plantilla para un solo registro.</small>
+                                <small class="text-muted">*Template layout for a single record.</small>
                                 <div *ngIf="uploadPercent | async as pct">
                                     <progress [value]="pct" max="100"></progress>
                                     {{ pct | number }}%
@@ -94,8 +91,7 @@
 
 <ng-template #mensaje>
     <div class="container mt-5">
-        <p class="lead"><strong><i>Para continuar con la creacion de su plantilla, deberá añadir los siguientes
-                    campos a su Documento!!</i></strong></p>
+        <p class="lead"><strong><i>To continue with the creation of your template, you must add the following fields to your Document!!</i></strong></p>
         <div class="">
             <div class="">
                 <div class="card-header">
@@ -105,8 +101,8 @@
                     <thead class="thead">
                         <tr>
                             <th>#</th>
-                            <th>Campo</th>
-                            <th>Tipo</th>
+                            <th>Field</th>
+                            <th>Type</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -121,7 +117,7 @@
         </div>
         <br>
         <div class="row justify-content-center">
-            <button class="btn btn-primary" type="button" (click)="itemListSaveS()">Añadir </button>
+            <button class="btn btn-primary" type="button" (click)="itemListSaveS()">Next </button>
         </div>
     </div>
 </ng-template>
@@ -140,7 +136,7 @@
         <div class="modal-content">
             <form class="form" [formGroup]="addCampoFormS" (ngSubmit)="addCampoS()">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Agregar Campos</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">New Fields</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -148,17 +144,16 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col">
-                            <label for="proyecto">Nombre:</label>
-
+                            <label for="proyecto">Name:</label>
                             <input type="text" class="form-control text-uppercase" formControlName="nombre"
                                 oninput="this.value = this.value.toUpperCase()">
                         </div>
                     </div>
                     <div class="row">
                         <div class="col">
-                            <label for="tipo">Tipo:</label>
+                            <label for="tipo">Type:</label>
                             <select class="form-control text-uppercase" id="tipo" name="tipo" formControlName="tipo">
-                                <option selected disabled value="">Seleccione...</option>
+                                <option selected disabled value="">Choose...</option>
                                 <option [value]="d.nombre" *ngFor="let d of tipoArray;trackBy: trackByFn">{{ d.nombre }}
                                 </option>
                             </select>
@@ -168,8 +163,8 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                    <button class="btn btn-primary" type="submit" [disabled]="!addCampoFormS.valid">Guardar </button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button class="btn btn-primary" type="submit" [disabled]="!addCampoFormS.valid">Save </button>
                 </div>
             </form>
         </div>
@@ -182,7 +177,7 @@
         <div class="modal-content">
             <form class="form" (ngSubmit)="updateCampoS(campotoEditS)">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Editar Campos</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Fields</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -191,14 +186,14 @@
 
                     <div class="row mb-2">
                         <div class="col">
-                            <label for="nombreEdit">Nombre:</label>
+                            <label for="nombreEdit">Name:</label>
                             <input type="text" class="form-control text-uppercase" id="nombreEdit" name="nombreEdit"
                                 [(ngModel)]="campotoEditS.nombre" readonly>
                         </div>
                     </div>
                     <div class="row mb-2">
                         <div class="col">
-                            <label for="departamentoEdit">Tipo:</label>
+                            <label for="departamentoEdit">Type:</label>
                             <select class="form-control text-uppercase" id="departamentoEdit" name="departamentoEdit"
                                 [(ngModel)]="campotoEditS.tipo">
                                 <option value=""></option>
@@ -208,26 +203,35 @@
                     </div>
                     <div class="row mb-2">
                         <div class="col">
-                            <label for="busqueda">Campo para búsqueda:</label>
+                            <label for="busqueda">Search Field:</label>
                             <select class="form-control" id="busqueda" name="busqueda"
                                 [(ngModel)]="campotoEditS.busqueda">
-                                <option selected disabled>Seleccione...</option>
-                                <option [ngValue]="true">SI</option>
+                                <option selected disabled>Choose...</option>
+                                <option [ngValue]="true">YES</option>
                                 <option [ngValue]="false">NO</option>
                             </select>
                         </div>
                     </div>
                     <div class="row mb-2">
                         <div class="col">
-                            <label for="nivel">Visible:</label>
+                            <label for="nivel">Active:</label>
                             <select class="form-control" id="estado" name="estado" [(ngModel)]="campotoEditS.estado">
-                                <option selected disabled>Seleccione...</option>
-                                <option [ngValue]="true">SI</option>
+                                <option selected disabled>Choose...</option>
+                                <option [ngValue]="true">YES</option>
                                 <option [ngValue]="false">NO</option>
                             </select>
                         </div>
                     </div>
-
+                    <div class="row mb-2">
+                        <div class="col">
+                            <label for="nivel">Visible?</label>
+                            <select class="form-control" id="visible" name="visible" [(ngModel)]="campotoEditS.visible">
+                                <option selected disabled>Choose...</option>
+                                <option [ngValue]="true">YES</option>
+                                <option [ngValue]="false">NO</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

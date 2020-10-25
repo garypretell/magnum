@@ -12,7 +12,7 @@ import { Observable, Subject, of } from 'rxjs';
 })
 export class UsuarioReporteComponent implements OnInit, OnDestroy {
   fechaActual = true;
-  nomFecha = 'Día';
+  nomFecha = 'Now';
   max = new Date().toISOString().substring(0, 10);
   hoyF = new Date().toISOString().substring(0, 10);
   today = new Date().toISOString().substring(0, 10);
@@ -34,9 +34,9 @@ export class UsuarioReporteComponent implements OnInit, OnDestroy {
   gradient = false;
   showLegend = true;
   showXAxisLabel = true;
-  xAxisLabel = 'DOCUMENTO';
+  xAxisLabel = 'DOCUMENTS';
   showYAxisLabel = true;
-  yAxisLabel = 'REGISTROS';
+  yAxisLabel = 'RECORDS';
 
   constructor(
     public afs: AngularFirestore,
@@ -49,13 +49,13 @@ export class UsuarioReporteComponent implements OnInit, OnDestroy {
 
   sub;
   ngOnInit() {
-    const mifecha = Date.parse(this.today);
+    const mifecha = this.today;
     this.activatedroute.paramMap.pipe(switchMap(params => {
       this.usuarioDoc = this.afs.doc(`usuarios/${params.get('u')}`).valueChanges();
       this.miproyecto = params.get('p');
       this.misede = params.get('s');
       this.miusuario = params.get('u');
-      return this.getFecha(this.miusuario, mifecha);
+      return this.getFecha(this.miusuario);
     }), takeUntil(this.unsubscribe$)).subscribe();
 
   }
@@ -76,21 +76,20 @@ export class UsuarioReporteComponent implements OnInit, OnDestroy {
 
   hoy() {
     this.today = new Date().toISOString().substring(0, 10);
-    const mifecha = Date.parse(this.today);
-    this.nomFecha = 'Día';
+    this.nomFecha = 'Now';
     this.fechaActual = true;
-    return this.getFecha(this.miusuario, mifecha).pipe(takeUntil(this.unsubscribe$)).subscribe();
+    return this.getFecha(this.miusuario).pipe(takeUntil(this.unsubscribe$)).subscribe();
   }
 
   rango() {
-    this.nomFecha = 'Rango de Fechas';
+    this.nomFecha = 'Date Range';
     this.fechaActual = false;
     this.changeBetween();
   }
 
   changeActual(today) {
     const mifecha = Date.parse(today);
-    this.getFecha(this.miusuario, mifecha).pipe(takeUntil(this.unsubscribe$)).subscribe();
+    this.getFecha(this.miusuario).pipe(takeUntil(this.unsubscribe$)).subscribe();
   }
 
   changeBetween() {
@@ -99,8 +98,8 @@ export class UsuarioReporteComponent implements OnInit, OnDestroy {
     this.getBetween(this.miusuario, desde, hasta).pipe(takeUntil(this.unsubscribe$)).subscribe();
   }
 
-  getFecha(usuario, fecha) {
-    return this.afs.collection('Registros', ref => ref.where('usuarioid', '==', usuario).where('mifecha', '==', fecha))
+  getFecha(usuario) {
+    return this.afs.collection('Registros', ref => ref.where('usuarioid', '==', usuario).where('createdAt', '==', Date.parse(this.today)))
       .valueChanges().pipe(map((m: any) => {
         this.midata$ =
           of(m).pipe(
@@ -119,8 +118,8 @@ export class UsuarioReporteComponent implements OnInit, OnDestroy {
   }
 
   getBetween(usuario, desde, hasta) {
-    return this.afs.collection('Registros', ref => ref.where('usuarioid', '==', usuario).where('mifecha', '>=', desde)
-    .where('mifecha', '<=', hasta).orderBy('mifecha'))
+    return this.afs.collection('Registros', ref => ref.where('usuarioid', '==', usuario).where('createdAt', '>=', desde)
+    .where('createdAt', '<=', hasta).orderBy('createdAt'))
       .valueChanges().pipe(map((m: any) => {
         this.midata$ =
           of(m).pipe(

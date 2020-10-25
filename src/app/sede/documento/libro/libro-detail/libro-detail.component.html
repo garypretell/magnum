@@ -1,13 +1,13 @@
 <div class="breadcrumb d-flex justify-content-between align-items-center">
   <ol class="breadcrumb mb-0 p-0">
     <li class="breadcrumb-item text-primary">
-      <a role="button" (click)="goSede()">Sede</a>
+      <a role="button" (click)="goHome()">Home</a>
     </li>
     <li class="breadcrumb-item text-primary">
-      <a role="button" (click)="goDocumento()">Documentos</a>
+      <a role="button" (click)="goDocumento()">Documents</a>
     </li>
     <li class="breadcrumb-item text-primary">
-      <a role="button" (click)="goLibro()">Libros</a>
+      <a role="button" (click)="goLibro()">Books</a>
     </li>
     <li class="breadcrumb-item active" aria-current="page">{{ milibro }}</li>
   </ol>
@@ -25,9 +25,9 @@
             <div class="row">
               <div class="col">
                 <div class="shadow card bg-info text-white text-center m-2">
-                  <h4> Documento {{documento}}</h4>
+                  <h4> {{documento}}</h4>
                   <small>
-                    <cite title="Source Title">*Filtrar Documentos</cite>
+                    <cite title="Source Title">*Filter Records</cite>
                   </small>
                 </div>
                 <hr class="mx-5">
@@ -38,9 +38,9 @@
                         <div dragula="DRAGULA_FACTS" class="w-100">
                           <ng-container *ngSwitchCase="'numerico'">
                             <div class="col mb-3" style="cursor: pointer;">
-                              <label for="{{data.nombre}}">{{data.nombre}}</label>
+                              <label for="{{data.id}}">{{data.nombre}}</label>
                               <input type="number" class="form-control text-uppercase field-focus border border-info"
-                                name="{{data.nombre}}" [(ngModel)]="searchObject[data.nombre]"
+                                name="{{data.id}}" [(ngModel)]="searchObject[data.id]"
                                 (keyup.enter)="keytab($event)" autofocus />
                             </div>
                           </ng-container>
@@ -48,16 +48,16 @@
                             <div class="col mb-3" style="cursor: pointer;">
                               <label for="apellidos">{{data.nombre}}</label>
                               <input type="date" placeholder="dd/mm/yyyy"
-                                class="form-control text-uppercase field-focus" name="{{data.nombre}}"
-                                [(ngModel)]="newObject[data.nombre]" (keyup.enter)="keytab($event)" autofocus />
+                                class="form-control text-uppercase field-focus" name="{{data.id}}"
+                                [(ngModel)]="newObject[data.id]" (keyup.enter)="keytab($event)" autofocus />
                             </div>
                           </ng-container>
                           <ng-container *ngSwitchDefault>
                             <div class="col mb-3" style="cursor: pointer;">
-                              <label for="{{data.nombre}}">{{data.nombre}}</label>
+                              <label for="{{data.id}}">{{data.nombre}}</label>
                               <input type="text" class="form-control text-uppercase field-focus border border-info"
-                                oninput="this.value = this.value.toUpperCase()" name="{{data.nombre}}"
-                                [(ngModel)]="searchObject[data.nombre]" (keyup.enter)="keytab($event)" autofocus />
+                                oninput="this.value = this.value.toUpperCase()" name="{{data.id}}"
+                                [(ngModel)]="searchObject[data.id]" (keyup.enter)="keytab($event)" autofocus />
                             </div>
                           </ng-container>
                         </div>
@@ -67,7 +67,7 @@
                 </form>
                 <div class="text-info text-center mt-0">
                   <small>
-                    <cite title="Source Title">*Filtrar Documentos</cite>
+                    <cite title="Source Title">*Filter Records</cite>
                   </small>
                 </div>
               </div>
@@ -78,11 +78,10 @@
                 <h5 class="card-title">{{ documento }}</h5>
                 <hr />
                 <p class="card-text">
-                  Para imprimir todos los registros pertenecientes a este libro,
-                  haga click en imprimir.
+                  Print Book
                 </p>
                 <button id="imprimir" class="btn btn-outline-primary" (click)="printLibro()">
-                  Imprimir
+                  Print
                   <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
                     xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 480 480"
                     style="enable-background: new 0 0 480 480;" xml:space="preserve">
@@ -157,26 +156,26 @@
                 <thead>
                   <tr>
                     <th scope="col">#</th>
-                    <th scope="col" *ngFor="let column of campos.campos | filterBy: userFilterF">
+                    <th scope="col" *ngFor="let column of campos.campos | filterBy: userFilterV">
                       {{column.nombre | uppercase}}
                     </th>
-                    <th scope="col"  *ngIf="auth.canDelete(auth.user$ | async)">ACCIONES</th>
+                    <th scope="col"  *ngIf="auth.canDelete(auth.user$ | async)">ACTIONS</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr
                     *ngFor="let item of registros$ | async | filterBy: searchObject | paginate: { itemsPerPage: 10, currentPage: p }; let i = index">
                     <td>{{ 10 * (p -1) + i + 1}} </td>
-                    <td *ngFor="let col of campos.campos | filterBy: userFilterF">
-                      {{item[col.nombre] }}
+                    <td *ngFor="let col of campos.campos | filterBy: userFilterV">
+                      {{item[col.id] }}
                     </td>
                     <td  *ngIf="auth.canDelete(auth.user$ | async)">
-                      <button class="btn btn-outline-primary btn-sm mr-2" (click)="enableEditing($event, item)">
-                        <i class="fa fa-pencil"></i> Editar</button>
+                      <button class="btn btn-outline-primary btn-sm m-1" (click)="enableEditing($event, item)">
+                        <i class="fa fa-pencil"></i> Edit</button>
 
-                      <button class="btn btn-outline-danger btn-sm mr-2" (click)="deleteRegistro(item)">
-                        <i class="fa fa-trash"></i> Eliminar</button>
-                        <a role="button" class="btn btn-outline-secondary btn-sm" target="_blank"  [attr.href]="item.path | safe"><i class="fa fa-camera" aria-hidden="true"></i> Imagen</a>
+                      <button class="btn btn-outline-danger btn-sm m-1" (click)="deleteRegistro(item)">
+                        <i class="fa fa-trash"></i> Delete</button>
+                        
                     </td>
                   </tr>
                 </tbody>
@@ -193,7 +192,7 @@
           <div class="modal-content">
             <form class="form" (ngSubmit)="updateRegistroS()">
               <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Editar Registros</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Edit Records</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -208,21 +207,21 @@
                       <div class="col-xs-8">
                         <div [ngSwitch]="col.tipo">
                           <div *ngSwitchCase="'numerico'">
-                            <input type="number" class="form-control text-uppercase" [(ngModel)]="editObject[col.nombre]"
+                            <input type="number" class="form-control text-uppercase" [(ngModel)]="editObject[col.id]"
                               [ngModelOptions]="{standalone: true}" />
                           </div>
                           <div *ngSwitchCase="'fecha'">
                             <input type="date" placeholder="dd/mm/yyyy" class="form-control text-uppercase"
-                              [(ngModel)]="editObject[col.nombre]" [ngModelOptions]="{standalone: true}" />
+                              [(ngModel)]="editObject[col.id]" [ngModelOptions]="{standalone: true}" />
                           </div>
                           <div *ngSwitchCase="'imagen'">
-                            <input type="file" class="form-control" [(ngModel)]="editObject[col.nombre]"
+                            <input type="file" class="form-control" [(ngModel)]="editObject[col.id]"
                               [ngModelOptions]="{standalone: true}">
                           </div>
                           <div *ngSwitchDefault>
                             <input type="text" enter class="form-control"
                               oninput="this.value = this.value.toUpperCase()" [ngModelOptions]="{standalone: true}"
-                              [(ngModel)]="editObject[col.nombre]" />
+                              [(ngModel)]="editObject[col.id]" />
                           </div>
                         </div>
                       </div>
@@ -231,8 +230,8 @@
                 </form>
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                <button class="btn btn-primary" type="submit">Actualizar</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button class="btn btn-primary" type="submit">Update</button>
               </div>
             </form>
           </div>
@@ -245,7 +244,7 @@
 <ng-template #mensaje>
   <div class="col-md-12">
     <div class="alert alert-primary alert-dismissible fade show" role="alert">
-      <strong>Mensaje!</strong> No existen documentos registrados.
+      <strong>Message!</strong> There are no registered documents.
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>

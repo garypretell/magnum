@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg sticky-top navbar-light bg-light mb-2" *ngIf="(auth.user$) | async">
 
-  <a class="navbar-brand" [routerLink]="['/Home']"> <strong><em> Sindex </em></strong></a>
+  <a class="navbar-brand" [routerLink]="['/Home']"> <strong>MAGNUM</strong></a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
@@ -9,21 +9,39 @@
     <ul class="navbar-nav mr-auto">
       <li class="nav-item">
         <a #proyectosLink routerLinkActive="active" class="nav-link more" [routerLink]="['/Chat']"
-          *ngIf="auth.canDelete(auth.user$ | async)" >
+          *ngIf="auth.canDelete(auth.user$ | async)">
           Chat</a>
       </li>
-      <li class="nav-item" *ngIf="auth.canEdit(auth.user$ | async)">
-        <a #proyectosLink routerLinkActive="active" class="nav-link more" (click)="goDocumento()">
-          Mis Documentos</a>
+      <li class="nav-item">
+        <a #proyectosLink routerLinkActive="active" class="nav-link more" [routerLink]="['/proyecto']"
+          *ngIf="auth.canSuper(auth.user$ | async)">
+          Projects</a>
       </li>
+      <!-- <li class="nav-item" *ngIf="auth.canEdit(auth.user$ | async)">
+        <a #proyectosLink routerLinkActive="active" class="nav-link more" (click)="goDocumento()">
+          Documents</a>
+      </li> -->
       <li class="nav-item" *ngIf="auth.canDelete(auth.user$ | async)">
         <a #proyectosLink routerLinkActive="active" class="nav-link more" (click)="goUsuarios()">
-          Mis Usuarios</a>
+          Users</a>
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0">
-      <button type="button" (click)="signOut()" class="btn btn-outline-danger">Cerrar Sesión <i class="fa fa-power-off"
-          aria-hidden="true"></i></button>
+      <!-- <button type="button" (click)="signOut()" class="btn btn-outline-danger">Cerrar Sesión <i class="fa fa-power-off"
+          aria-hidden="true"></i></button> -->
+      <span class="navbar-text">
+        <div class="btn-group">
+          <img role="button" src="https://res.cloudinary.com/mhmd/image/upload/v1564960395/avatar_usae7z.svg"
+            alt="avatar" width="50" class="rounded-circle" data-toggle="dropdown" data-display="static"
+            aria-haspopup="true" aria-expanded="false" />
+          <div class="dropdown-menu dropdown-menu-lg-right">
+            <button class="dropdown-item" type="button">Avatar</button>
+            <button class="dropdown-item" type="button" (click)="goReporte()">My Progress</button>
+            <div class="dropdown-divider"></div>
+            <button class="dropdown-item" type="button" (click)="signOut()">Sign Out</button>
+          </div>
+        </div>
+      </span>
     </form>
   </div>
 </nav>

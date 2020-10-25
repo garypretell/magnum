@@ -44,27 +44,33 @@ export class LibroComponent implements OnInit, OnDestroy, AfterViewChecked {
   sub;
   ngOnInit() {
     this.tipoBusqueda = true;
-    this.sub = this.activatedroute.paramMap.pipe(map(async params => {
-      const { uid } = await this.auth.getUser();
+    this.sub = this.activatedroute.paramMap.pipe(map(params => {
       this.miproyecto = params.get('p');
       this.misede = params.get('s');
       this.documento = params.get('d');
-      this.midocumento = this.misede + '_' + this.documento;
-      this.topList$ = this.afs.collection(`Libros`, ref => ref.where('proyecto', '==', this.miproyecto).where('uid', '==', uid)
-      .where('sede', '==', this.misede)
-      .where('documento', '==', this.midocumento).orderBy('createdAt', 'desc').limit(6)).valueChanges();
+      this.midocumento = this.miproyecto + '_' + this.documento;
     })).subscribe();
 
     this.afs.doc(`Proyecto/${this.miproyecto}`).valueChanges().pipe(switchMap((m: any) => {
-      if(m) {
+      if (m) {
         return this.afs.doc(`Sede/${this.misede}`).valueChanges().pipe(map((data: any) => {
-          this.proyecto = {nombre: m.nombre, id: data.proyecto};
-          this.sede = {nombre: data.nombre, id: data.sede};
+          this.proyecto = { nombre: m.nombre, id: data.proyecto };
+          this.sede = { nombre: data.nombre, id: data.sede };
         }));
       } else {
         return of(null);
       }
     }), takeUntil(this.unsubscribe$)).subscribe();
+
+    this.auth.user$.pipe(map(m => {
+      if (m) {
+        this.topList$ = this.afs.collection(`Libros`, ref => ref.where('proyecto', '==', this.miproyecto).where('uid', '==', m.uid)
+          .where('sede', '==', this.misede)
+          .where('documento', '==', this.midocumento).orderBy('createdAt', 'desc').limit(6)).valueChanges();
+      } else {
+        return of(null);
+      }
+    }), takeUntil(this.unsubscribe$)).subscribe()
 
     this.addLibroForm = this.formBuilder.group({
       numLibro: ['', [Validators.required]]
@@ -98,7 +104,7 @@ export class LibroComponent implements OnInit, OnDestroy, AfterViewChecked {
       uid: uid
     };
 
-    const id = this.misede + '_' + this.documento + '_' + this.addLibroForm.value.numLibro;
+    const id = this.miproyecto + '_' + this.documento + '_' + this.addLibroForm.value.numLibro;
     this.afs.firestore.doc(`Libros/${id}`).get()
       .then(docSnapshot => {
         if (docSnapshot.exists) {
@@ -109,7 +115,7 @@ export class LibroComponent implements OnInit, OnDestroy, AfterViewChecked {
           });
           this.addLibroForm.reset();
         } else {
-          const ruta = this.misede + '_' + this.documento;
+          const ruta = this.miproyecto + '_' + this.documento;
           const datos = { Libros: firebase.firestore.FieldValue.increment(1) };
           this.afs.doc(`Documentos/${ruta}`).set(datos, { merge: true });
           this.afs.doc(`Libros/${id}`).set(libro);
@@ -122,12 +128,12 @@ export class LibroComponent implements OnInit, OnDestroy, AfterViewChecked {
     if (this.numLibro) {
       if (this.tipoBusqueda) {
         this.router.navigate(['/proyecto', this.miproyecto, 'sede', this.misede,
-        'documentos', this.documento, 'libros', this.numLibro, 'registrar']);
+          'documentos', this.documento, 'libros', this.numLibro, 'registrar']);
       } else {
         this.router.navigate(['/proyecto', this.miproyecto, 'sede', this.misede,
-        'documentos', this.documento, 'libros', this.numLibro]);
+          'documentos', this.documento, 'libros', this.numLibro]);
       }
-    }else {
+    } else {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
@@ -143,17 +149,17 @@ export class LibroComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   goListado(libro) {
     this.router.navigate(['/proyecto', this.miproyecto, 'sede', this.misede, 'documentos',
-     this.documento, 'libros', libro.numLibro]);
+      this.documento, 'libros', libro.numLibro]);
   }
 
   goRegistrar(libro) {
     this.router.navigate(['/proyecto', this.miproyecto, 'sede', this.misede,
-        'documentos', this.documento, 'libros', libro.numLibro, 'registrar']);
+      'documentos', this.documento, 'libros', libro.numLibro, 'registrar']);
   }
 
   goUpload(libro) {
     this.router.navigate(['/proyecto', this.miproyecto, 'sede', this.misede,
-        'documentos', this.documento, 'libros', libro.numLibro, 'upload']);
+      'documentos', this.documento, 'libros', libro.numLibro, 'upload']);
   }
 
   showModal() {
@@ -161,10 +167,10 @@ export class LibroComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   goDocumentos() {
-    this.router.navigate(['/proyecto', this.miproyecto, 'sede', this.misede, 'documentos']);
+    this.router.navigate(['/proyecto', this.miproyecto, 'documents']);
   }
 
-  goSede() {
+  goHome() {
     this.router.navigate(['Home']);
   }
 

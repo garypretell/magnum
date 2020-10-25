@@ -5,6 +5,8 @@ import { Observable } from 'rxjs';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/scan';
 import 'rxjs/add/operator/take';
+import 'rxjs/add/operator/takeLast';
+import 'rxjs/add/operator/last';
 
 interface QueryConfig {
   path: string; // path to collection

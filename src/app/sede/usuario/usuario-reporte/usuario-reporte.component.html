@@ -8,16 +8,16 @@
               <h6>{{usuario?.sede.nombre}}</h6>
             </ng-container>
             <hr>
-            <p class="text-muted">Se visualiza el progreso del usuario en la indexación de documentos (hoy). <br>
-              Modifique las fechas para obtener el reporte deseado. <br> </p>
+            <p class="text-muted">User's progress in indexing documents is displayed (today). <br>
+              Modify the dates to obtain the desired report. <br> </p>
           </div>
         </div>
         <table class="table text-center" *ngIf="data.length > 0" >
           <thead>
             <tr>
               <th scope="col">#</th>
-              <th scope="col">Documento</th>
-              <th scope="col"># Registros</th>
+              <th scope="col">Document</th>
+              <th scope="col"># Records</th>
             </tr>
           </thead>
           <tbody>
@@ -39,15 +39,15 @@
                 {{nomFecha}}
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                <button class="dropdown-item" type="button" (click)="hoy()" >Día</button>
-                <button class="dropdown-item" type="button" (click)="rango()" >Rango de Fechas</button>
+                <button class="dropdown-item" type="button" (click)="hoy()" >Now</button>
+                <button class="dropdown-item" type="button" (click)="rango()" >Date Range</button>
               </div>
             </div>
             <form class="form-inline mb-2">
               <ng-container *ngIf="!fechaActual; else actual"  >
-                <label for="desde" class="ml-2 mr-1">Desde: </label>
+                <label for="desde" class="ml-2 mr-1">Since: </label>
                 <input type="date" class="form-control mr-2" [max]= "hasta" [(ngModel)]="desde"  [ngModelOptions]="{ standalone: true }" id="desde" (ngModelChange)="changeBetween()">
-                <label for="hasta" class="ml-2 mr-1">Hasta: </label>
+                <label for="hasta" class="ml-2 mr-1">To: </label>
                 <input type="date" class="form-control" [min]="desde" [max]= "hoyF" [(ngModel)]="hasta"  [ngModelOptions]="{ standalone: true }" id="hasta" (ngModelChange)="changeBetween()">
               </ng-container>
               <ng-template #actual>

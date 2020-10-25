@@ -28,15 +28,16 @@ export class ImprimirRegistroComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
-  imprimirReg(registro, sede, documento) {
+  imprimirReg(registro, proyecto, documento) {
     try {
       this.myTemplate = null;
       this.data = registro;
-      const ref = this.storage.ref(sede + '/' + documento + '.html');
+      const ref = this.storage.ref(proyecto + '/' + documento + '.html');
       ref.getDownloadURL()
         .pipe(switchMap((m: string) => {
-          this.url = m.replace('https://firebasestorage.googleapis.com/', '');
-          return this.http.get(this.url, { responseType: 'text' }).pipe(map(data => {
+          // this.url = m.replace('https://firebasestorage.googleapis.com/', '');
+          this.url = m;
+          return this.http.get(this.url, { responseType: 'text' }).pipe(map((data: any) => {
             this.myTemplate = data.replace(/{{([^}}]+)?}}/g, ($1, $2) =>
               $2.split('.').reduce((p, c) => p ? p[c] : '', this));
           }));

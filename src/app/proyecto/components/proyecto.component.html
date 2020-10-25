@@ -4,17 +4,17 @@
             <div class="row h-100">
                 <div class="col-sm-12 col-md-4 mb-4">
                     <div class="d-flex w-100 justify-content-between">
-                        <h5>Proyectos</h5>
+                        <h5>Projects</h5>
                         <span role="button" class="badge badge-primary align-self-center"
-                            (click)="showModal()">Nuevo</span>
+                            (click)="showModal()">New</span>
                     </div>
                     <hr class="mt-1">
                     <div class="input-group mb-2">
-                        <input type="search" class="form-control text-uppercase" id="inlineFormInputGroup"
-                            placeholder="Buscar Proyecto" [(ngModel)]="searchObject.nombre">
+                        <input type="search" class="form-control" id="inlineFormInputGroup"
+                            placeholder="Search Project" [(ngModel)]="searchObject.nombre">
                     </div>
                     <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                        <strong>Mensaje! </strong>Seleccione un proyecto e inicie!
+                        <strong>Message! </strong>Select a project and start!
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -25,23 +25,26 @@
                         <ul class="list-unstyled mb-3">
                             <div class="shadow-sm card mt-2">
                                 <li class="media">
-                                    <img src="../../../assets/imagen.png" class="m-2" alt="...">
+                                    <img src="https://firebasestorage.googleapis.com/v0/b/indexa-7cdf3.appspot.com/o/imagen.png?alt=media&token=0f34677f-df47-420b-8e7b-469669cd1c10" class="m-2" alt="...">
                                     <div class="media-body">
                                         <h5 [ngStyle]="{'color':getColor(proyecto.estado)}" class="mt-2">
                                             {{ proyecto.nombre | uppercase }}</h5>
                                         <hr class="mt-1">
                                         <div class="row justify-content-end mb-2">
                                             <div class="col-5">
-                                                <button class="btn btn-outline-success btn-sm mb-1"
+                                                <button class="btn btn-outline-success btn-sm m-1"
                                                     (click)="enableEditing($event, proyecto)"><i
                                                         class="fa fa-pencil-square-o"
-                                                        aria-hidden="true"></i>Editar</button>&nbsp;
-                                                <button class="btn btn-outline-danger btn-sm mb-1"
-                                                    (click)="deleteProyecto(proyecto)">Eliminar</button>
+                                                        aria-hidden="true"></i>Edit</button>&nbsp;
+                                                <button class="btn btn-outline-danger btn-sm m-1"
+                                                    (click)="deleteProyecto(proyecto)">Delete</button>
                                             </div>
                                             <div class="col-7">
-                                                <div class="float-right mr-3"><button class="btn btn-outline-primary btn-sm mb-1"
-                                                        (click)="goSedes(proyecto)">Sedes</button></div>
+                                                <div class="float-right mr-3">
+                                                    <button class="btn btn-outline-success btn-sm m-1"
+                                                        (click)="goDocuments(proyecto)">Documents</button>
+                                                        <button class="btn btn-outline-primary btn-sm m-1"
+                                                        (click)="goSedes(proyecto)">Locations</button></div>
                                             </div>
                                         </div>
                                     </div>
@@ -70,7 +73,7 @@
         <div class="modal-content">
             <form class="form" [formGroup]="addProyectoForm">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Registrar Proyecto</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">New Project</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -80,7 +83,7 @@
                     </div>
                     <div class="row">
                         <div class="col">
-                            <label for="nombre">Nombre:</label>
+                            <label for="nombre">Name:</label>
                             <input type="text" class="form-control text-uppercase" id="nombre" name="nombre"
                                 formControlName="nombre" oninput="this.value = this.value.toUpperCase()">
                         </div>
@@ -101,7 +104,7 @@
         <div class="modal-content">
             <form class="form">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Editar Proyecto</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Project</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -111,7 +114,7 @@
                     </div>
                     <div class="row  mb-2">
                         <div class="col">
-                            <label for="nombreEdit">Proyecto</label>
+                            <label for="nombreEdit">Project</label>
                             <input type="text" class="form-control text-uppercase" id="nombreEdit" name="nombreEdit"
                                 [(ngModel)]="proyectotoEdit.nombre" oninput="this.value = this.value.toUpperCase()"
                                 readonly>
@@ -119,10 +122,10 @@
                     </div>
                     <div class="row  mb-2">
                         <div class="col">
-                            <label for="transferenciaEdit">Transferencia?:</label>
+                            <label for="transferenciaEdit">Transfer?:</label>
                             <select class="form-control" id="transferenciaEdit" name="transferenciaEdit"
                                 [(ngModel)]="proyectotoEdit.transferencia" [ngModelOptions]="{standalone: true}">
-                                <option selected disabled value="">Seleccione...</option>
+                                <option selected disabled value="">Choose...</option>
                                 <option [ngValue]="true">true</option>
                                 <option [ngValue]="false">false</option>
                             </select>
@@ -133,7 +136,7 @@
                             <label for="estadoEdit">Visible?:</label>
                             <select class="form-control" id="estadoEdit" name="estadoEdit"
                                 [(ngModel)]="proyectotoEdit.estado" [ngModelOptions]="{standalone: true}">
-                                <option selected disabled value="">Seleccione...</option>
+                                <option selected disabled value="">Choose...</option>
                                 <option [ngValue]="true">true</option>
                                 <option [ngValue]="false">false</option>
                             </select>

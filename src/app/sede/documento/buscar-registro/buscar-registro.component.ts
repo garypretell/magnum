@@ -23,6 +23,7 @@ export class BuscarRegistroComponent implements OnInit, OnDestroy {
   @ViewChild('myModalEditS') myModalEditS: ElementRef;
   private unsubscribe$ = new Subject();
   userFilterF: any = { estado: 'true' };
+  userFilterV: any = { visible: 'true' };
   searchObject: any = {};
   miproyecto: any;
   micodigo: any;
@@ -51,7 +52,7 @@ export class BuscarRegistroComponent implements OnInit, OnDestroy {
       this.miproyecto = params.get('p');
       this.misede = params.get('s');
       this.documento = params.get('d');
-      this.midocumento = this.misede + '_' + this.documento;
+      this.midocumento = this.miproyecto + '_' + this.documento;
       this.campos$ = this.afs.doc(`Plantillas/${this.midocumento}`).valueChanges();
     });
 
@@ -68,7 +69,7 @@ export class BuscarRegistroComponent implements OnInit, OnDestroy {
     this.campos$.pipe(switchMap(m => {
       if (m) {
         const valor = m.campos.filter(f => f.busqueda === true);
-        const result = valor.map(a => a.nombre);
+        const result = valor.map(a => a.id);
         const keys = Object.keys(this.searchObject);
         return this.afs.collection('Registros', ref => {
           let query: Query = ref;
@@ -120,32 +121,32 @@ export class BuscarRegistroComponent implements OnInit, OnDestroy {
 
   seleccionar(data) {
     try {
-      this.childImprimir.imprimirReg(data, this.misede, this.documento);
+      this.childImprimir.imprimirReg(data, this.miproyecto, this.documento);
     } catch (error) {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: 'No existen un modelo de plantilla en el sistema, agregue uno!'
+        text: 'There is no template model in the system, add one!'
       });
     }
   }
 
   deleteRegistro(item) {
     Swal.fire({
-      title: 'Esta seguro de eliminar este Registro?',
-      // text: 'You won\'t be able to revert this!',
+      title: 'Are you sure to delete this Record?',
+      text: 'You won\'t be able to revert this!',
       icon: 'warning',
       showCancelButton: true,
-      cancelButtonText: 'Cancelar',
+      cancelButtonText: 'Cancel',
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Si, Eliminar!'
+      confirmButtonText: 'Yes, Delete!'
     }).then((result) => {
       if (result.value) {
         this.afs.doc(`Registros/${item.id}`).delete();
         Swal.fire(
-          'Eliminado!',
-          'El registro ha sido eliminado.',
+          'Deleted!',
+          'Record has benn deleted.',
           'success'
         );
       }
@@ -167,13 +168,11 @@ export class BuscarRegistroComponent implements OnInit, OnDestroy {
   }
 
   goDocumentos() {
-    this.router.navigate(['/proyecto', this.miproyecto, 'sede', this.misede, 'documentos']);
+    this.router.navigate(['/proyecto', this.miproyecto, 'documents']);
   }
 
-  goSede() {
-    this.router.navigate(['/proyecto', this.miproyecto, 'sede', this.misede]);
+  goHome() {
+    this.router.navigate(['/Home']);
   }
-
-  
 
 }

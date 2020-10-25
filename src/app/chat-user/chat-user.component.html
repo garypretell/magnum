@@ -26,7 +26,7 @@
           </div>
           <input #inputEl class="form-control" [(ngModel)]="newMsg" maxlength="100" (keydown.enter)="submit(chat.id)"  >
           <div class="input-group-append">
-            <button (click)="submit(chat.id)" type="button" class="btn btn-outline-primary" [disabled]="!newMsg">Enviar<i
+            <button (click)="submit(chat.id)" type="button" class="btn btn-outline-primary" [disabled]="!newMsg">Send<i
                 class="fa fa-paper-plane"></i></button>
           </div>
         </div>

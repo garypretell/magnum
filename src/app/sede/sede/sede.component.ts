@@ -89,20 +89,20 @@ export class SedeComponent implements OnInit, OnDestroy {
 
   deleteSede(sede) {
     Swal.fire({
-      title: 'Esta seguro de eliminar esta Sede?',
-      // text: 'You won\'t be able to revert this!',
+      title: 'Are you sure to delete this Location?',
+      text: 'You won\'t be able to revert this!',
       icon: 'warning',
       showCancelButton: true,
-      cancelButtonText: 'Cancelar',
+      cancelButtonText: 'Cancel',
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Si, Eliminar!'
+      confirmButtonText: 'Yes, Delete!'
     }).then((result) => {
       if (result.value) {
         this.sedeService.removeSede(sede);
         Swal.fire(
-          'Eliminado!',
-          'La Sede ha sido eliminada.',
+          'Deleted!',
+          'Location has been eliminated.',
           'success'
         );
       }

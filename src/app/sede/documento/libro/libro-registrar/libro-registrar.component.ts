@@ -19,11 +19,11 @@ declare const $;
 export class LibroRegistrarComponent implements OnInit, OnDestroy {
   @ViewChild('myModalEditS') myModalEditS: ElementRef;
   private unsubscribe$ = new Subject();
-  checkBoxValue: boolean;
   newObject: any = {};
   editObject: any = {};
   registrotoEdit: any = {};
   userFilterF: any = { estado: 'true' };
+  userFilterV: any = { visible: 'true' };
   p: any;
   miproyecto: any;
   micodigo: any;
@@ -50,7 +50,6 @@ export class LibroRegistrarComponent implements OnInit, OnDestroy {
     private activatedroute: ActivatedRoute,
     private electronService: ElectronService,
   ) {
-    this.checkBoxValue = true;
   }
 
   sub;
@@ -59,10 +58,10 @@ export class LibroRegistrarComponent implements OnInit, OnDestroy {
       this.miproyecto = params.get('p');
       this.misede = params.get('s');
       this.documento = params.get('d');
-      this.midocumento = this.misede + '_' + this.documento;
+      this.midocumento = this.miproyecto + '_' + this.documento;
       this.milibro = params.get('l');
       this.miruta = this.midocumento + '_' + this.milibro;
-      this.rutaImg = this.misede + '_' + params.get('d').replace(/ /g, '') + '_' + this.milibro;
+      this.rutaImg = this.miproyecto + '_' + params.get('d').replace(/ /g, '') + '_' + this.milibro;
       this.actualizarData(this.miruta);
       this.campos$ = this.afs.doc(`Plantillas/${this.midocumento}`).valueChanges();
       this.registros$ = this.afs.collection(`Registros`, ref => ref.where('sede.id', '==', this.misede)
@@ -78,7 +77,6 @@ export class LibroRegistrarComponent implements OnInit, OnDestroy {
     }), takeUntil(this.unsubscribe$)).subscribe();
     $('input:text:visible:first').focus();
 
-    this.cargarImagen();
   }
 
   ngOnDestroy() {
@@ -108,20 +106,25 @@ export class LibroRegistrarComponent implements OnInit, OnDestroy {
 
   deleteRegistro(registro) {
     Swal.fire({
-      title: 'Esta seguro de eliminar este Registro?',
-      // text: 'You won\'t be able to revert this!',
+      title: 'Are you sure to delete this Record?',
+      text: 'You won\'t be able to revert this!',
       icon: 'warning',
       showCancelButton: true,
-      cancelButtonText: 'Cancelar',
+      cancelButtonText: 'Cancel',
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Si, Eliminar!'
+      confirmButtonText: 'Yes, Delete!'
     }).then((result) => {
       if (result.value) {
         this.afs.doc(`Registros/${registro.id}`).delete();
+        const rutaDoc = this.misede + '_' + this.documento;
+        const value = { value: firebase.firestore.FieldValue.increment(-1) };
+        const datos = { contador: firebase.firestore.FieldValue.increment(-1) };
+        this.afs.doc(`Documentos/${rutaDoc}`).set(value, { merge: true });
+        this.afs.doc(`Libros/${this.miruta}`).set(datos, { merge: true });
         Swal.fire(
-          'Eliminado!',
-          'El registro ha sido eliminado.',
+          'Deleted!',
+          'Record has been eliminated.',
           'success'
         );
       }
@@ -149,20 +152,10 @@ export class LibroRegistrarComponent implements OnInit, OnDestroy {
 
   add(registro) {
     try {
-      if (this.checkBoxValue) {
-        registro.path = this.objImg.path;
-        this.objImg.estado = true;
-        this.midata[this.indx] = this.objImg;
-        const imagenes = {
-          imagenes: this.midata
-        };
-        this.afs.doc(`Libros/${this.rutaImg}`).set(imagenes, { merge: true });
-      } else {
-        registro.path = 'sin imagen';
-      }
+      registro.path = 'sin imagen';
       registro.libro = parseFloat(this.milibro);
-      registro.createdAt = (new Date().toISOString().substring(0, 10));
-      registro.mifecha = Date.parse(new Date().toISOString().substring(0, 10));
+      registro.createdAt = Date.parse(new Date().toISOString().substring(0, 10));
+      registro.mifecha = Date.parse(new Date().toISOString());
       registro.usuarioid = firebase.auth().currentUser.uid;
       registro.proyecto = this.proyecto;
       registro.sede = this.sede;
@@ -170,22 +163,20 @@ export class LibroRegistrarComponent implements OnInit, OnDestroy {
 
       this.afs.collection(`Registros`).add(registro);
       const datos = { contador: firebase.firestore.FieldValue.increment(1) };
-      const rutaDoc = this.misede + '_' + this.documento;
+      const rutaDoc = this.miproyecto + '_' + this.documento;
       const value = { value: firebase.firestore.FieldValue.increment(1) };
       this.afs.doc(`Documentos/${rutaDoc}`).set(value, { merge: true });
+      this.afs.doc(`Proyecto/${this.proyecto.id}`).set(value, { merge: true });
       this.afs.doc(`Libros/${this.miruta}`).set(datos, { merge: true });
       this.newObject = {};
       registro = null;
       // $('input:text:visible:first').focus();
       $('input:enabled:visible:first').focus();
-      if (this.checkBoxValue) {
-        this.cargarImagen();
-      }
     } catch (error) {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: 'No existen imágenes para indexar!'
+        text: 'There was an unexpected error!'
       });
     }
   }
@@ -199,29 +190,12 @@ export class LibroRegistrarComponent implements OnInit, OnDestroy {
     });
   }
 
-  goSede() {
-    this.router.navigate(['/proyecto', this.miproyecto, 'sede', this.misede]);
+  goHome() {
+    this.router.navigate(['/Home']);
   }
 
   goDocumento() {
-    this.router.navigate(['/proyecto', this.miproyecto, 'sede', this.misede, 'documentos']);
-  }
-
-  cargarImagen() {
-    this.afs.doc(`Libros/${this.rutaImg}`).valueChanges().pipe(map((data: any) => {
-      if (data) {
-        this.midata = data.imagenes;
-        this.indx = (data.imagenes).findIndex(x => x.estado === false);
-        const imagen = data.imagenes.filter(f => f.estado === false);
-        if (imagen.length > 0) {
-          this.objImg = imagen[0];
-          this.image = this.electronService.fs.readFileSync(this.objImg.path).toString('base64');
-        }
-        else{
-          this.image = null;
-        }
-      } else { return of(null); }
-    }),first()).subscribe();
+    this.router.navigate(['/proyecto', this.miproyecto, 'documents']);
   }
 
   verListado() {

@@ -1,0 +1,131 @@
+<section>
+  <div class="container-fluid mt-2">
+    <div class="row">
+      <div class="col-3">
+        <ngx-treeview [config]="config" [items]="itemsList2" (filterChange)="onFilterChange($event)"
+          (selectedChange)="onSelectedChange($event)">
+        </ngx-treeview>
+        <button type="button" class="btn btn-primary btn-lg btn-block mt-3" (click)="addFolder()">ADD</button>
+      </div>
+      <div class="col-9 bg-light shadow-sm">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+          <a class="navbar-brand" href="#"><STRong>FOLDER LIST</STRong></a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
+            aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        </nav>
+        <select class="custom-select" size="3" (click)="filterList($event)">
+          <option value="INDEXING" selected>Indexing</option>
+          <option value="EVALUATING">Evaluating</option>
+          <option value="COMPLETE">Complete</option>
+        </select>
+        <ng-container *ngIf="folderList | async as folderList; else loading">
+          <ng-container *ngIf="(folderList)?.length > 0; else mensaje">
+            <div class="alert alert-warning alert-dismissible fade show shadow-sm mt-2" role="alert">
+              <strong>Folder List!</strong> List of folders filtered by status.
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <ng-container [ngSwitch]="estado" *ngIf="statusList | async as statusList; else loading">
+              <ng-container *ngSwitchCase="'INDEXING'">
+                <table class="table text-center" *ngIf="(statusList)?.length > 0; else noElement">
+                  <thead>
+                    <tr>
+                      <th scope="col">#</th>
+                      <th class="text-left">FullPath</th>
+                      <th class="text-left">Document</th>
+                      <th scope="col">Indexing</th>
+                      <th scope="col">Status</th>
+                      <th scope="col">Delete</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      *ngFor="let item of statusList | filterBy: searchObject | paginate: { itemsPerPage: 7, currentPage: p }; let i = index">
+                      <td>{{ 7 * (p -1) + i + 1}} </td>
+                      <td class="text-left">
+                        {{item.pathname }}
+                      </td>
+                      <td [ngStyle]="{ color: getColor(item.document) }" class="text-left">
+                        <strong>{{item.document }} </strong>
+                        
+                      </td>
+                      <td><span role="button" class="badge badge-primary" (click)="goStatus(item)" >START</span></td>
+                      <td><span class="badge badge-success">Indexing</span></td>
+                      <td><span role="button" class="badge badge-danger" (click)="eliminar(item)">Delete</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+                <hr *ngIf="(folderList)?.length > 7">
+                <div class="text-right">
+                  <pagination-controls (pageChange)="p = $event" *ngIf="(folderList)?.length > 7">
+                  </pagination-controls>
+                </div>
+              </ng-container>
+              <ng-container *ngSwitchDefault>
+                  <ng-container *ngIf="(statusList)?.length > 0; else noElement">
+                    <table class="table text-center">
+                      <thead>
+                        <tr>
+                          <th scope="col">#</th>
+                          <th class="text-left">FullPath</th>
+                          <th class="text-left">Document</th>
+                          <th scope="col">{{estado | titlecase}}</th>
+                          <th scope="col">Status</th>
+                          <th scope="col">Delete</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr
+                          *ngFor="let item of statusList | filterBy: searchObject | paginate: { itemsPerPage: 7, currentPage: p }; let i = index">
+                          <td>{{ 7 * (p -1) + i + 1}} </td>
+                          <td class="text-left">
+                            {{item.pathname }}
+                          </td>
+                          <td class="text-left">
+                            {{item.document }}
+                          </td>
+                          <td><span role="button"
+                              class="badge badge-primary" (click)="goStatus(item)">{{ estado === 'EVALUATING' ? 'START' : 'SHOW' }}</span></td>
+                          <td><span class="badge" [ngClass]="{'badge-info': estado === 'EVALUATING',
+                              'badge-dark':  estado === 'COMPLETE'}">{{estado | titlecase}}</span></td>
+                          <td><span role="button" class="badge badge-danger" (click)="eliminar(item)">Delete</span></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <hr *ngIf="(statusList)?.length > 7">
+                    <div class="text-right">
+                      <pagination-controls (pageChange)="p = $event" *ngIf="(statusList )?.length > 7">
+                      </pagination-controls>
+                    </div>
+                  </ng-container>
+              </ng-container>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+        <ng-template #loading>
+          <div class="d-flex justify-content-center mt-5">
+            <div class="spinner-border text-info" role="status">
+            </div>
+            <strong class="text-info"> Loading... </strong>
+          </div>
+        </ng-template>
+        <ng-template #mensaje>
+          <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert">
+            <strong>Important!</strong> Add folders from the list to start indexing.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        </ng-template>
+        <ng-template #noElement>
+          <div class="alert alert-info" role="alert">
+            No items found!
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</section>

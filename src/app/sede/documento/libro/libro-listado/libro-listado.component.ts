@@ -26,6 +26,7 @@ export class LibroListadoComponent implements OnInit, OnDestroy {
   sede: any;
 
   elemento: any;
+  libros$: any;
 
   constructor(
     public page: PaginationService,
@@ -43,7 +44,7 @@ export class LibroListadoComponent implements OnInit, OnDestroy {
       this.miproyecto = params.get('p');
       this.misede = params.get('s');
       this.documento = params.get('d');
-      this.midocumento = this.misede + '_' + params.get('d');
+      this.midocumento = this.miproyecto + '_' + params.get('d');
       this.page.init('Libros', 'numLibro', this.misede, this.midocumento, { reverse: true, prepend: false });
     });
 
@@ -53,6 +54,8 @@ export class LibroListadoComponent implements OnInit, OnDestroy {
         this.sede = {nombre: data.nombre, id: data.sede};
       }));
     }), takeUntil(this.unsubscribe$)).subscribe();
+
+    
   }
 
   ngOnDestroy() {
@@ -89,8 +92,8 @@ export class LibroListadoComponent implements OnInit, OnDestroy {
     this.router.navigate(['/proyecto', this.miproyecto, 'sede', this.misede, 'documentos']);
   }
 
-  goSede() {
-    this.router.navigate(['/proyecto', this.miproyecto, 'sede', this.misede, ]);
+  goHome() {
+    this.router.navigate(['/Home' ]);
   }
 
   goListado(libro) {

@@ -2,3 +2,8 @@
     max-height: calc(100vh - 390px);
     overflow-y: auto;
 }
+
+.div-center {
+    left: 50%;
+    top: 50%;
+}

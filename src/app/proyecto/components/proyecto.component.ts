@@ -33,13 +33,15 @@ export class ProyectoComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.addProyectoForm = this.formBuilder.group({
-      nombre:  ['', [Validators.required ]],
-      estado:  [''],
-      total_registros:  [''],
+      nombre: ['', [Validators.required]],
+      estado: [''],
+      total_registros: [''],
       transferencia: [''],
       secretarias: [''],
       sedes: [''],
       createdAt: [''],
+      value: [''],
+      name: [''],
     });
   }
 
@@ -66,26 +68,28 @@ export class ProyectoComponent implements OnInit, OnDestroy {
 
   addProyecto() {
     this.afs.firestore.doc(`Proyecto/${(this.addProyectoForm.value.nombre).replace(/ /g, '')}`).get()
-    .then(docSnapshot => {
-      if (docSnapshot.exists) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: 'Este proyecto ya ha sido registrado!'
-        });
-        this.addProyectoForm.reset();
-      } else {
-        this.addProyectoForm.value.transferencia = false;
-        this.addProyectoForm.value.estado = true;
-        this.addProyectoForm.value.total_registros = 0;
-        this.addProyectoForm.value.secretarias = [];
-        this.addProyectoForm.value.sedes = [];
-        this.addProyectoForm.value.createdAt = Date.now();
-        const diocesis = this.afs.doc(`Proyecto/${(this.addProyectoForm.value.nombre).replace(/ /g, '')}`);
-        diocesis.set(this.addProyectoForm.value, { merge: true });
-        this.addProyectoForm.reset();
-      }
-    });
+      .then(docSnapshot => {
+        if (docSnapshot.exists) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Este proyecto ya ha sido registrado!'
+          });
+          this.addProyectoForm.reset();
+        } else {
+          this.addProyectoForm.value.transferencia = false;
+          this.addProyectoForm.value.estado = true;
+          this.addProyectoForm.value.total_registros = 0;
+          this.addProyectoForm.value.secretarias = [];
+          this.addProyectoForm.value.sedes = [];
+          this.addProyectoForm.value.createdAt = Date.now();
+          this.addProyectoForm.value.value = 0;
+          this.addProyectoForm.value.name = this.addProyectoForm.value.nombre;
+          const diocesis = this.afs.doc(`Proyecto/${(this.addProyectoForm.value.nombre).replace(/ /g, '')}`);
+          diocesis.set(this.addProyectoForm.value, { merge: true });
+          this.addProyectoForm.reset();
+        }
+      });
   }
 
   updateProyecto(proyectotoEdit) {
@@ -95,19 +99,19 @@ export class ProyectoComponent implements OnInit, OnDestroy {
 
   deleteProyecto(proyecto) {
     Swal.fire({
-      title: 'Esta seguro de eliminar este Proyecto?',
+      title: 'Are you sure to delete this Project?',
       icon: 'warning',
       showCancelButton: true,
-      cancelButtonText: 'Cancelar',
+      cancelButtonText: 'Cancel',
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Si, Eliminar!'
+      confirmButtonText: 'Yes, Delete!'
     }).then((result) => {
       if (result.value) {
         this.proyectoService.removeProyectos(proyecto);
         Swal.fire(
-          'Eliminado!',
-          'El Proyecto ha sido eliminado.',
+          'Deleted!',
+          'Project has been eliminated.',
           'success'
         );
       }
@@ -125,6 +129,10 @@ export class ProyectoComponent implements OnInit, OnDestroy {
 
   goSedes(doc) {
     this.router.navigate(['/proyecto', doc.id, 'sede']);
+  }
+
+  goDocuments(doc) {
+    this.router.navigate(['/proyecto', doc.id, 'documents']);
   }
 
   trackByFn(index, item) {

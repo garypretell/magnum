@@ -59,14 +59,13 @@ export class PlantillaComponent implements OnInit, OnDestroy {
     );
   }
 
-
   sub;
   ngOnInit() {
     this.sub = this.activatedroute.paramMap.subscribe(params => {
       this.miproyecto = params.get('p');
       this.misede = params.get('s');
       this.documento = params.get('d');
-      this.midocumento = this.misede + '_' + params.get('d').replace(/ /g, '');
+      this.midocumento = this.miproyecto + '_' + params.get('d').replace(/ /g, '');
       this.campos$ = this.afs.doc(`Plantillas/${this.midocumento}`).valueChanges();
       this.documento$ = this.afs.doc(`Documentos/${this.midocumento}`).valueChanges();
     });
@@ -83,7 +82,6 @@ export class PlantillaComponent implements OnInit, OnDestroy {
       estado: [''],
     });
   }
-
 
   ngOnDestroy() {
     this.sub.unsubscribe();
@@ -116,16 +114,16 @@ export class PlantillaComponent implements OnInit, OnDestroy {
       { nombre: 'usuarioid', tipo: 'numerico', estado: 'principal' },
       { nombre: 'fecharegistro', tipo: 'fecha', estado: 'principal' }
     ];
-    this.afs.doc(`Plantillas/${this.midocumento}`).set({ sede: this.misede, campos: items });
+    this.afs.doc(`Plantillas/${this.midocumento}`).set({ proyecto: this.miproyecto, campos: items });
     this.afs.doc(`Documentos/${this.midocumento}`).set({ plantilla: true }, { merge: true });
   }
 
-  goSede() {
-    this.router.navigate(['/proyecto', this.miproyecto, 'sede', this.misede]);
+  goHome() {
+    this.router.navigate(['/Home']);
   }
 
   goDocumento() {
-    this.router.navigate(['/proyecto', this.miproyecto, 'sede', this.misede, 'documentos']);
+    this.router.navigate(['/proyecto', this.miproyecto, 'documents']);
   }
 
   showModalS() {
@@ -135,7 +133,7 @@ export class PlantillaComponent implements OnInit, OnDestroy {
   uploadFile(event) {
     const nombre = this.documento + '.html';
     const file = event.target.files[0];
-    const filePath = `${this.misede}/${nombre}`;
+    const filePath = `${this.miproyecto}/${nombre}`;
     const fileRef = this.storage.ref(filePath);
     const task = this.storage.upload(filePath, file);
 
@@ -154,22 +152,22 @@ export class PlantillaComponent implements OnInit, OnDestroy {
 
   deleteCampoS(campo) {
     Swal.fire({
-      title: 'Esta seguro de eliminar este campo?',
-      // text: 'You won\'t be able to revert this!',
+      title: 'Are you sure to delete this field?',
+      text: 'You won\'t be able to revert this!',
       icon: 'warning',
       showCancelButton: true,
-      cancelButtonText: 'Cancelar',
+      cancelButtonText: 'Cancel',
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Si, Eliminar!'
+      confirmButtonText: 'Yes, Delete!'
     }).then((result) => {
       if (result.value) {
         this.afs.doc(`Plantillas/${this.midocumento}`).update({
           campos: firestore.FieldValue.arrayRemove(campo)
         });
         Swal.fire(
-          'Eliminado!',
-          'El campo ha sido eliminado.',
+          'Deleted!',
+          'Field has been deleted.',
           'success'
         );
       }
@@ -201,10 +199,12 @@ export class PlantillaComponent implements OnInit, OnDestroy {
       return alert('Este campo está reservado por el sistema');
     }
     const data: any = {
+      visible: true,
       estado: true,
       busqueda: false,
       tipo: this.addCampoFormS.value.tipo,
       nombre: this.addCampoFormS.value.nombre,
+      id: this.addCampoFormS.value.nombre.replace(/ /g, '')
     };
     await this.afs.doc(`Plantillas/${this.midocumento}`).update({
       campos: firestore.FieldValue.arrayUnion(data)

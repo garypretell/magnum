@@ -18,7 +18,8 @@ export class ChatResolverGuard implements Resolve<Observable<any[]>> {
       this.auth.user$.pipe(switchMap((da: any) => {
         return this.afs.collection('usuarios', ref => ref.where('diocesis.id', '==', da.diocesis.id)
           .where('roles.admin', '==', true)
-          .orderBy('lastSesion', 'desc')).valueChanges().pipe(map(datos => {
+          .orderBy('lastSesion', 'desc')
+        ).valueChanges().pipe(map(datos => {
           return datos.map((change: any) => {
             const data = change;
             const user = data.uid;

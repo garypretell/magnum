@@ -62,14 +62,14 @@ export class UsuarioComponent implements OnInit, OnDestroy {
 
   deleteUsusario(usuario) {
     Swal.fire({
-      title: 'Esta seguro de eliminar este usuario?',
-      // text: 'You won\'t be able to revert this!',
+      title: 'Are you sure to delete this user?',
+      text: 'You won\'t be able to revert this!',
       icon: 'warning',
       showCancelButton: true,
-      cancelButtonText: 'Cancelar',
+      cancelButtonText: 'Cancel',
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Si, Eliminar!'
+      confirmButtonText: 'Yes, Delete!'
     }).then((result) => {
       if (result.value) {
         this.afs.doc(`Sede/${this.misede}`).update({
@@ -77,8 +77,8 @@ export class UsuarioComponent implements OnInit, OnDestroy {
         });
         this.afs.doc(`usuarios/${usuario.uid}`).delete();
         Swal.fire(
-          'Eliminado!',
-          'El usuario ha sido eliminado.',
+          'Deleted!',
+          'User has been deleted.',
           'success'
         );
       }

@@ -61,9 +61,8 @@ export class InicioComponent implements OnInit, OnDestroy {
     private router: Router,
     public inicioService: InicioService,
     public sedeService: SedeService
-  )
-  {
-    this.view = [innerWidth / 1.5, 400];
+  ) {
+    this.view = [innerWidth / 1.5, innerHeight/2.4];
     this.isAdmin = false;
   }
 
@@ -92,15 +91,8 @@ export class InicioComponent implements OnInit, OnDestroy {
             this.proyecto = data.proyecto;
             this.sede = data.sede;
             if (this.proyecto) {
-              this.sede$ = await this.sedeService.getSede(this.proyecto.id);
-              this.midata = this.afs
-                .collection('Documentos', (ref) =>
-                  ref
-                    .where('proyecto', '==', this.proyecto.id)
-                    .where('estado', '==', 'proyecto')
-                )
-                .valueChanges({ idField: 'ids' });
-              this.midata = this.afs.collection('Documentos', ref => ref.where('sede', '==', this.sede.id)
+              this.sede$ = this.afs.collection(`Sede`, ref => ref.where('proyecto', '==', this.proyecto.id)).valueChanges({ idField: 'id' });
+              this.midata = this.afs.collection('Documentos', ref => ref.where('proyecto', '==', this.proyecto.id)
                 .orderBy('createdAt', 'desc')).valueChanges({ idField: 'ids' });
               return this.sede;
             }
@@ -183,7 +175,7 @@ export class InicioComponent implements OnInit, OnDestroy {
   }
 
   onResize(event) {
-    this.view = [event.target.innerWidth / 1.35, 400];
+    this.view = [event.target.innerWidth / 1.4, event.target.innerHeigth / 2.3];
   }
 
   signOut() {
@@ -228,7 +220,7 @@ export class InicioComponent implements OnInit, OnDestroy {
       if (data) {
         const proyecto = data.proyecto;
         const sede = data.sede;
-        return this.router.navigate(['/proyecto', proyecto.id, 'sede', sede.id, 'documentos']);
+        return this.router.navigate(['/proyecto', proyecto.id, 'documents']);
       } else {
         return of(null);
       }
@@ -239,5 +231,18 @@ export class InicioComponent implements OnInit, OnDestroy {
     this.auth.signOut().then(() => {
       this.router.navigate(['/']);
     });
+  }
+
+  goFs() {
+    const fs = require('fs');
+    if (fs.existsSync('M:/Imagenes')) {
+      return this.router.navigate(['/familysearch']);
+    }else{
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Disk drive not found!',
+      })
+    };
   }
 }

@@ -27,6 +27,10 @@ const routes: Routes = [
     loadChildren: './proyecto/proyecto.module#ProyectoModule'
   },
   {
+    path: 'familysearch',
+    loadChildren: './familysearch/familysearch.module#FamilySearchModule'
+  },
+  {
     path: 'proyecto/:p/sede',
     loadChildren: './sede/sede.module#SedeModule',
     canActivate: [EditorGuard],

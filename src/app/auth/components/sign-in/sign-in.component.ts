@@ -4,12 +4,10 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../auth.service';
 import { AngularFirestoreCollection, AngularFirestore } from '@angular/fire/firestore';
 import { Observable, of} from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 declare var jQuery: any;
 import { IpcRenderer } from 'electron';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 declare const $;
 
 @Component({
@@ -39,10 +37,11 @@ export class SignInComponent implements OnInit {
     public afAuth: AngularFireAuth,
 
   ) {
-    this.view = [innerWidth / 1.3, 400];
+    this.view = [innerWidth / 1.5, innerHeight / 1.8];
+    // this.view = [500, 400];
     this.currentDate = new Date();
     this.meta.updateTag({ name: 'description', content: 'Sign In' });
-    this.title.setTitle('Sindex');
+    this.title.setTitle('MAGNUM');
     this.ocultar = true;
     this.diocesis = 'vacio';
   }
@@ -51,7 +50,7 @@ export class SignInComponent implements OnInit {
   ngOnInit() {
     this.miError = false;
     this.midata = this.afs
-      .collection('Documentos')
+      .collection('Proyecto')
       .valueChanges();
 
     this.loginForm = this.formBuilder.group({

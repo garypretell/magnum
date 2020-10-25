@@ -3,14 +3,14 @@
       <div class="container h-100 mt-5">
         <div class="row h-100">
           <div class="col-sm-12 col-md-4 mb-4">
-            <h5>Usuarios</h5>
+            <h5>Users</h5>
             <hr class="mt-1">
             <div class="input-group mb-2">
               <input type="search" class="form-control text-uppercase" id="inlineFormInputGroup"
                 placeholder="Buscar Usuario" [(ngModel)]="searchObject.displayName">
             </div>
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
-              <strong>Mensaje!</strong> Modifique los permisos de cada usuario.
+              <strong>Message!</strong> Modify the permissions of each user.
               <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -29,13 +29,13 @@
                       <div class="d-flex w-100 justify-content-between mt-2 mb-2">
                         <form>
                           <button type="button" class="btn btn-outline-primary  m-1" (click)="editUsuario(usuario)"
-                            *ngIf="auth.canDelete(auth.user$ | async)">Editar</button>
+                            *ngIf="auth.canDelete(auth.user$ | async)">Edit</button>
                           <button type="button" class="btn btn-outline-danger  m-1 "
-                            *ngIf="auth.canDelete(auth.user$ | async)" (click)="deleteUsusario(usuario)">Eliminar</button>
+                            *ngIf="auth.canDelete(auth.user$ | async)" (click)="deleteUsusario(usuario)">Delete</button>
                         </form>
                         <form>
                           <button type="button" class="btn btn-outline-secondary  m-1 mr-2"
-                            (click)="goReporte(usuario)">Reportes</button>
+                            (click)="goReporte(usuario)">Report</button>
                         </form>
                       </div>
                     </div>
@@ -63,7 +63,7 @@
       <div class="modal-content">
   
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Editar Usuario</h5>
+          <h5 class="modal-title" id="exampleModalLabel">Edit User</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -72,30 +72,30 @@
           <div class="container">
             <div class="row">
               <div class="col mb-2">
-                <label for="nivel">Acceso al Sistema:</label>
+                <label for="nivel">Access to the system:</label>
                 <select class="form-control" [(ngModel)]="subscriber">
-                  <option selected disabled value="">Seleccione...</option>
-                  <option [ngValue]="true">SI</option>
+                  <option selected disabled value="">Choose...</option>
+                  <option [ngValue]="true">YES </option>
                   <option [ngValue]="false">NO</option>
                 </select>
               </div>
             </div>
             <div class="row mb-2">
               <div class="col">
-                <label for="nivel">Ingresar Registros:</label>
+                <label for="nivel">Registry Editor:</label>
                 <select class="form-control" [(ngModel)]="editor">
-                  <option selected disabled value="">Seleccione...</option>
-                  <option [ngValue]="true">SI</option>
+                  <option selected disabled value="">Choose...</option>
+                  <option [ngValue]="true">YES</option>
                   <option [ngValue]="false">NO</option>
                 </select>
               </div>
             </div>
             <div class="row mb-2">
               <div class="col">
-                <label for="nivel">Es Secretaria?</label>
+                <label for="nivel">is Secretary?</label>
                 <select class="form-control" [(ngModel)]="admin">
-                  <option selected disabled value="">Seleccione...</option>
-                  <option [ngValue]="true">SI</option>
+                  <option selected disabled value="">Choose...</option>
+                  <option [ngValue]="true">YES</option>
                   <option [ngValue]="false">NO</option>
                 </select>
               </div>
@@ -104,7 +104,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button class="btn btn-primary" (click)="updateUsuario()"> Actualizar </button>
+          <button class="btn btn-primary" (click)="updateUsuario()"> Update </button>
         </div>
   
       </div>

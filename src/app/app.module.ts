@@ -18,10 +18,7 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 // NG Translate
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-
-
 import { AppComponent } from './app.component';
-
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { FilterPipeModule } from 'ngx-filter-pipe';
@@ -29,10 +26,10 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { AngularSplitModule } from 'angular-split';
 import { DragulaModule } from 'ng2-dragula';
 import { ImageViewerModule } from 'ng2-image-viewer';
-
 import { NgxSpinnerModule } from "ngx-spinner";
 import { CommonModule } from '@angular/common';
-
+import { OrderDownlineTreeviewEventParser, TreeviewConfig, TreeviewEventParser, TreeviewModule } from 'ngx-treeview';
+import { NgImageSliderModule } from 'ng-image-slider';
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -56,10 +53,12 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     NgxPaginationModule,
     FilterPipeModule,
     InfiniteScrollModule,
-    AngularSplitModule,
+    AngularSplitModule.forRoot(),
     DragulaModule.forRoot(),
     ImageViewerModule,
     NgxSpinnerModule,
+    NgImageSliderModule,
+    TreeviewModule.forRoot(),
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -68,7 +67,9 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
       }
     })
   ],
-  providers: [],
+  providers: [
+    { provide: TreeviewEventParser, useClass: OrderDownlineTreeviewEventParser },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
