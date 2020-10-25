@@ -35,9 +35,9 @@ export class EvaluatingComponent implements OnInit {
     private electronService: ElectronService
   ) { }
 
-  sub;
+  
   ngOnInit(): void {
-    this.sub = this.activatedroute.paramMap.pipe(switchMap((params: any) => {
+    this.activatedroute.paramMap.pipe(switchMap((params: any) => {
       this.idFolder = params.get('id');
       return this.afs.doc(`Folder/${this.idFolder}`).valueChanges().pipe(map((f: any) => {
         this.mifolder = f;
@@ -53,7 +53,6 @@ export class EvaluatingComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    this.sub.unsubscribe();
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }
@@ -80,11 +79,12 @@ export class EvaluatingComponent implements OnInit {
   }
 
   add() {
+    this.image = null;
     this.afs.doc(`Registros/${this.imgObj.id}`).set(this.newObject, { merge: true });
     this.afs.doc(`Images/${this.imgObj.id}`).set({ status: 2 }, { merge: true });
     this.newObject = {};
-    $('input:enabled:visible:first').focus();
     this.loadImage();
+    $('input:text:visible:first').focus();
   }
 
   keytab(event) {
