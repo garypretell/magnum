@@ -1,84 +1,82 @@
-<body *ngIf="(auth.user$) | async as user; else loading">
-  <div
-    *ngIf="!user.roles.editor; else principal">
-    <div class="shadow container card mt-5 mb-5">
-      <div class="card-body">
-        <h5 class="card-title">Comuníquese con su administador para que se le asignen los permisos...</h5>
-        <p class="card-text">
-          <strong>MAGNUM</strong>, le permite registrar de forma ilimitada los diferentes registros que contenga su
-          fondo documentario.
-        </p>
-        <button (click)="goLogin()" class="btn btn-primary">
-          Go Login
-        </button>
-      </div>
-    </div>
-    <div class="shadow container bg-light mt-5">
-      <div class="row m-2">
-        <div class="col-md-6 topmargin-sm">
-          <h3>Estas listo para iniciar? <b>contáctanos.</b></h3>
-          <p>
-            Rellene el formulario y nos comunicaremos con usted. Envíanos tus sugerencias al correo
-            electrónico: <b>pretellgf@gpsoft.org</b>
+<ng-container *ngIf="(auth.user$ | async)?.roles as rol; else loading">
+  <ng-container *ngIf="!rol.editor; else principal">
+      <div class="shadow container card mt-5 mb-5">
+        <div class="card-body">
+          <h5 class="card-title">Comuníquese con su administador para que se le asignen los permisos...</h5>
+          <p class="card-text">
+            <strong>MAGNUM</strong>, le permite registrar de forma ilimitada los diferentes registros que contenga su
+            fondo documentario.
           </p>
-        </div>
-        <div class="col-md-6 mt-4">
-          <form [formGroup]="pedidosForm">
-            <div class="row">
-              <div class="col-md-6">
-                <div class="form-group">
-                  <input type="text" oninput="this.value = this.value.toUpperCase()" class="form-control" id="name"
-                    formControlName="nombres" placeholder="Nombres" />
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <input type="text" oninput="this.value = this.value.toUpperCase()" class="form-control" id="lastname"
-                    formControlName="apellidos" placeholder="Apellidos" />
-                </div>
-              </div>
-              <div class="col-md-12">
-                <div class="form-group">
-                  <input type="email" class="form-control" id="email" formControlName="correo" placeholder="Correo" />
-                </div>
-              </div>
-              <div class="col-md-12">
-                <div class="form-group">
-                  <input type="text" oninput="this.value = this.value.toUpperCase()" class="form-control" id="proyecto"
-                    formControlName="proyecto" placeholder="Nombre del Proyecto" />
-                </div>
-              </div>
-              <div class="col-md-12">
-                <div class="form-group">
-                  <input type="text" oninput="this.value = this.value.toUpperCase()" class="form-control" id="sede"
-                    formControlName="sede" placeholder="Nombre de la Sede" />
-                </div>
-              </div>
-              <div class="col-md-12">
-                <div class="form-group">
-                  <input
-                    oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-                    type="number" maxlength="9" minlength="9" class="form-control" formControlName="celular" id="phone"
-                    placeholder="Celular" />
-                </div>
-              </div>
-              <div class="col-md-12">
-                <div class="form-group">
-                  <small id="emailHelp" class="form-text text-muted">*Todos los campos son
-                    obligatorios.</small>
-                </div>
-              </div>
-
-              <div class="col-md-12 mb-4">
-                <button class="btn btn-dark full-width" (click)="alerta()"
-                  [disabled]="!pedidosForm.valid">Enviar</button>
-              </div>
-            </div>
-          </form>
+          <button (click)="goLogin()" class="btn btn-primary">
+            Go Login
+          </button>
         </div>
       </div>
-    </div>
-  </div>
+      <div class="shadow container bg-light mt-5">
+        <div class="row m-2">
+          <div class="col-md-6 topmargin-sm">
+            <h3>Estas listo para iniciar? <b>contáctanos.</b></h3>
+            <p>
+              Rellene el formulario y nos comunicaremos con usted. Envíanos tus sugerencias al correo
+              electrónico: <b>pretellgf@gpsoft.org</b>
+            </p>
+          </div>
+          <div class="col-md-6 mt-4">
+            <form [formGroup]="pedidosForm">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <input type="text" oninput="this.value = this.value.toUpperCase()" class="form-control" id="name"
+                      formControlName="nombres" placeholder="Nombres" />
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <input type="text" oninput="this.value = this.value.toUpperCase()" class="form-control"
+                      id="lastname" formControlName="apellidos" placeholder="Apellidos" />
+                  </div>
+                </div>
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <input type="email" class="form-control" id="email" formControlName="correo" placeholder="Correo" />
+                  </div>
+                </div>
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <input type="text" oninput="this.value = this.value.toUpperCase()" class="form-control"
+                      id="proyecto" formControlName="proyecto" placeholder="Nombre del Proyecto" />
+                  </div>
+                </div>
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <input type="text" oninput="this.value = this.value.toUpperCase()" class="form-control" id="sede"
+                      formControlName="sede" placeholder="Nombre de la Sede" />
+                  </div>
+                </div>
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <input
+                      oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                      type="number" maxlength="9" minlength="9" class="form-control" formControlName="celular"
+                      id="phone" placeholder="Celular" />
+                  </div>
+                </div>
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <small id="emailHelp" class="form-text text-muted">*Todos los campos son
+                      obligatorios.</small>
+                  </div>
+                </div>
+                <div class="col-md-12 mb-4">
+                  <button class="btn btn-dark full-width" (click)="alerta()"
+                    [disabled]="!pedidosForm.valid">Enviar</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+  </ng-container>
   <ng-template #principal>
     <div class="container-fluid">
       <div class="row">
@@ -87,7 +85,7 @@
             <div class="col-4">
               <p><strong>Location</strong></p>
             </div>
-            <div class="col-5 text-right" *ngIf="isAdmin">
+            <div class="col-5 text-right" *ngIf="rol.admin">
               <a role="button" (click)="administrar()" class="badge badge-primary text-white"
                 *ngIf="auth.canDelete(auth.user$ | async)"><i class="fa fa-file-o" aria-hidden="true"> </i> Admin
               </a>
@@ -105,7 +103,8 @@
                       <strong> {{ sede.nombre | uppercase }}</strong>
                     </small>
                     <span role="button" class="badge badge-info align-self-center"
-                      *ngIf="auth.canDelete(auth.user$ | async)" (click)="showCodigo(sede)"><i class="fa fa-address-card"></i></span>
+                      *ngIf="auth.canDelete(auth.user$ | async)" (click)="showCodigo(sede)"><i
+                        class="fa fa-address-card"></i></span>
                   </div>
                   <p></p>
                   <hr />
@@ -155,20 +154,30 @@
                   <hr>
                   <div class="row row-cols-1 row-cols-md-4 ">
                     <div class="col mb-4 ">
-                      <div role="button" class="card h-100 shadow-sm bg-success" (click)="goFs()" >
-                         <div class="card-body justify-content-center">
-                          <h5 class="card-title text-white"><i class="fa fa-folder-open mr-1" aria-hidden="true"></i>RECORDS FAMILYSEARCH</h5>
+                      <div role="button" class="card h-100 shadow-sm bg-success" (click)="goFs()">
+                        <div class="card-body justify-content-center">
+                          <h5 class="card-title text-white"><i class="fa fa-files-o mr-1"
+                              aria-hidden="true"></i>RECORDS FAMILYSEARCH</h5>
                         </div>
                       </div>
                     </div>
                     <div class="col mb-4">
                       <div role="button" class="card h-100 shadow-sm bg-primary" (click)="goDocumento()">
-                         <div class="card-body ">
-                          <h5 class="card-title text-white"><i class="fa fa-folder-open mr-1" aria-hidden="true"></i>NEW RECORDS </h5>
+                        <div class="card-body ">
+                          <h5 class="card-title text-white"><i class="fa fa-folder-open mr-1" aria-hidden="true"></i>NEW
+                            RECORDS </h5>
                         </div>
                       </div>
                     </div>
-                   </div>
+                    <div class="col mb-4 ">
+                      <div role="button" class="card h-100 shadow-sm bg-dark" (click)="goCamera()">
+                        <div class="card-body justify-content-center">
+                          <h5 class="card-title text-white"><i class="fa fa-camera mr-1"
+                              aria-hidden="true"></i>TAKE SNAPSHOT</h5>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -177,8 +186,7 @@
       </div>
     </div>
   </ng-template>
-
-</body>
+</ng-container>
 <ng-template #loading>
   <div class="d-flex justify-content-center mt-5">
     <div class="spinner-border text-info" role="status">

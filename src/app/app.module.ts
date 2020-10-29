@@ -13,7 +13,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppHeaderComponent } from './app-header.component';
 import { AngularFireModule } from '@angular/fire';
 import { environment } from '../environments/environment';
-import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreModule } from '@angular/fire/firestore';
 
 // NG Translate
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
@@ -30,6 +30,9 @@ import { NgxSpinnerModule } from "ngx-spinner";
 import { CommonModule } from '@angular/common';
 import { OrderDownlineTreeviewEventParser, TreeviewConfig, TreeviewEventParser, TreeviewModule } from 'ngx-treeview';
 import { NgImageSliderModule } from 'ng-image-slider';
+import { AngularFireAuth } from '@angular/fire/auth';
+import { AuthService } from './auth/auth.service';
+import { AdminGuard, AuthGuard, EditorGuard } from './auth/guards';
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');

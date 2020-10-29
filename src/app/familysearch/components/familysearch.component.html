@@ -59,8 +59,8 @@
                   </tbody>
                 </table>
                 <hr *ngIf="(folderList)?.length > 7">
-                <div class="text-right">
-                  <pagination-controls (pageChange)="p = $event" *ngIf="(folderList)?.length > 7">
+                <div class="text-right" *ngIf="(folderList)?.length > 7">
+                  <pagination-controls (pageChange)="p = $event" >
                   </pagination-controls>
                 </div>
               </ng-container>

@@ -64,7 +64,7 @@ export class LibroComponent implements OnInit, OnDestroy, AfterViewChecked {
 
     this.auth.user$.pipe(map(m => {
       if (m) {
-        this.topList$ = this.afs.collection(`Libros`, ref => ref.where('proyecto', '==', this.miproyecto).where('uid', '==', m.uid)
+        this.topList$ = this.afs.collection(`Libros`, ref => ref.where('uid', '==', m.uid)
           .where('sede', '==', this.misede)
           .where('documento', '==', this.midocumento).orderBy('createdAt', 'desc').limit(6)).valueChanges();
       } else {
@@ -73,7 +73,8 @@ export class LibroComponent implements OnInit, OnDestroy, AfterViewChecked {
     }), takeUntil(this.unsubscribe$)).subscribe()
 
     this.addLibroForm = this.formBuilder.group({
-      numLibro: ['', [Validators.required]]
+      numLibro: ['', [Validators.required]],
+      recordsLength: ['', [Validators.required]],
     });
   }
 
@@ -96,6 +97,7 @@ export class LibroComponent implements OnInit, OnDestroy, AfterViewChecked {
       documento: this.midocumento,
       nomdoc: this.documento,
       numLibro: this.addLibroForm.value.numLibro,
+      recordsLength: this.addLibroForm.value.recordsLength,
       createdAt: Date.now(),
       imagenes: [],
       plantilla: false,
@@ -104,7 +106,7 @@ export class LibroComponent implements OnInit, OnDestroy, AfterViewChecked {
       uid: uid
     };
 
-    const id = this.miproyecto + '_' + this.documento + '_' + this.addLibroForm.value.numLibro;
+    const id = this.misede + '_' + this.documento + '_' + this.addLibroForm.value.numLibro;
     this.afs.firestore.doc(`Libros/${id}`).get()
       .then(docSnapshot => {
         if (docSnapshot.exists) {
@@ -126,13 +128,28 @@ export class LibroComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   goLibro() {
     if (this.numLibro) {
-      if (this.tipoBusqueda) {
-        this.router.navigate(['/proyecto', this.miproyecto, 'sede', this.misede,
-          'documentos', this.documento, 'libros', this.numLibro, 'registrar']);
-      } else {
-        this.router.navigate(['/proyecto', this.miproyecto, 'sede', this.misede,
-          'documentos', this.documento, 'libros', this.numLibro]);
-      }
+      const id = this.misede + '_' + this.documento + '_' + this.numLibro;
+      this.afs.firestore.doc(`Libros/${id}`).get()
+        .then(docSnapshot => {
+          if (docSnapshot.exists) {
+            if (this.tipoBusqueda) {
+              this.router.navigate(['/proyecto', this.miproyecto, 'sede', this.misede,
+                'documentos', this.documento, 'libros', this.numLibro, 'registrar']);
+            } else {
+              this.router.navigate(['/proyecto', this.miproyecto, 'sede', this.misede,
+                'documentos', this.documento, 'libros', this.numLibro]);
+            }
+          }
+          else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: 'Este libro no existe!',
+            });
+            this.numLibro = null;;
+          }
+          
+        });
     } else {
       Swal.fire({
         icon: 'error',

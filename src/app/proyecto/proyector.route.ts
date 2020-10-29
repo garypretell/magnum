@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { CameraComponent } from 'app/camera/components/camera/camera.component';
 import { ProyectoComponent } from './components/proyecto.component';
 import { DocumentComponent } from './document/document.component';
 import { ProyectoDetailComponent } from './proyecto-detail/proyecto-detail.component';
@@ -14,6 +15,7 @@ const routes: Routes = [
         children: [
           { path: '', component: ProyectoDetailComponent, pathMatch: 'full' },
           { path: 'documents', component: DocumentComponent },
+          { path: 'camera', component: CameraComponent }
         ]
       }
     ]

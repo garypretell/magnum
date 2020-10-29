@@ -1,8 +1,8 @@
 {
-  "name": "angular-electron",
+  "name": "MAGNUM",
   "version": "8.0.3",
   "description": "Angular 10 with Electron (Typescript + SASS + Hot Reload)",
-  "homepage": "https://github.com/garypretell/angular-electron",
+  "homepage": "https://github.com/garypretell/MAGNUM",
   "author": {
     "name": "Maxime GRIS",
     "email": "maxime.gris@gmail.com"
@@ -40,7 +40,7 @@
     "version": "conventional-changelog -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md",
     "lint": "ng lint",
     "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=assets/icons/mac/icon.icns --prune=true --out=release-builds",
-    "package-win": "electron-packager . electron-tutorial-app --overwrite --asar --platform=win32 --arch=x64 --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Electron Tutorial App\"",
+    "package-win": "electron-packager . Magnum --overwrite --asar --platform=win32 --arch=x64 --icon=assets/icon.ico --prune=true --out=release-builds",
     "package-linux": "electron-packager . electron-tutorial-app --overwrite --asar --platform=linux --arch=x64 --icon=assets/icons/png/1024x1024.png --prune=true --out=release-builds"
   },
   "devDependencies": {
@@ -113,6 +113,7 @@
     "@angular/fire": "6.0.2",
     "@angular/forms": "^10.0.0 || ^11.0.0-0",
     "@swimlane/ngx-charts": "16.0.0",
+    "@typedproject/gphoto2-driver": "2.4.2",
     "angular-split": "4.0.0",
     "bootstrap": "4.5.2",
     "directory-tree": "2.2.4",
@@ -127,6 +128,7 @@
     "ngx-pagination": "5.0.0",
     "ngx-spinner": "10.0.1",
     "ngx-treeview": "10.0.2",
+    "pkg-config": "1.1.1",
     "popper.js": "1.16.1",
     "rxjs-compat": "6.6.2",
     "sweetalert2": "9.17.2",

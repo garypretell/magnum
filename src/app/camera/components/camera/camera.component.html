@@ -1,0 +1,154 @@
+<ng-container *ngIf="(auth.user$ | async)?.roles as rol; else loading">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3 mb-2">
+                <div class="row justify-content-between">
+                    <div class="col-4">
+                        <p><strong>Folder</strong></p>
+                    </div>
+                </div>
+                <input type="number" min="1" class="form-control  mb-3" placeholder="Search Folder by number"
+                    [(ngModel)]="searchFolder.name" />
+                <hr />
+                <ng-container *ngIf="documentos$ | async as documentos; else loading">
+                    <h6>Documents</h6>
+                    <select class="custom-select" size="5" (click)="filterList()" [(ngModel)]="documento"
+                        [ngModelOptions]="{standalone: true}">
+                        <option [ngValue]="documento" *ngFor="let documento of documentos">{{documento.name}}</option>
+                    </select>
+                    <p class="text-muted small mt-3">
+                        <strong>MAGNUM </strong>Select a document to start...
+                    </p>
+                    <hr>
+                    <button [disabled]='!buttonEnabled' type="button" class="btn btn-primary btn-lg btn-block"
+                        (click)="showModal()">Create Folder</button>
+                </ng-container>
+            </div>
+            <div class="col-md-9 mb-3 bg-light altura">
+                <h4>
+                    <em> {{ sede?.nombre | uppercase }}</em>
+                </h4>
+                <div class="shadow alert alert-warning alert-dismissible fade show mt-3 mb-3" role="alert">
+                    <strong>Important!</strong> Before starting with the capture of images you should see this video
+                    tutorial.
+                    <a href="#" class="badge badge-primary">Tutorial</a>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <ng-container *ngIf="listado$ | async as data; else loading">
+                    <ng-container *ngIf="data.length > 0; else noElement">
+                        <table class="table text-center mt-4">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th class="text-left">Document</th>
+                                    <th class="text-center">Number</th>
+                                    <th scope="col">Capture</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Delete</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    *ngFor="let item of data | filterBy: searchFolder | paginate: { itemsPerPage: 7, currentPage: p }; let i = index">
+                                    <td>{{ 7 * (p -1) + i + 1}} </td>
+                                    <td [ngStyle]="{ color: getColor(item.document) }" class="text-left">
+                                        <strong>{{item.document }} </strong>
+                                    </td>
+                                    <td class="text-center">
+                                        {{item.name }}
+                                    </td>
+                                    <td><span role="button" class="badge badge-primary"
+                                            (click)="goStatus(item)">START</span></td>
+                                    <td><span class="badge badge-dark">{{item.status}}</span></td>
+                                    <td><span role="button" class="badge badge-danger"
+                                            (click)="eliminar(item)">Delete</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <hr *ngIf="data?.length > 7">
+                <div class="text-right" *ngIf="data?.length > 7">
+                  <pagination-controls (pageChange)="p = $event">
+                  </pagination-controls>
+                </div>
+                    </ng-container>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</ng-container>
+
+<ng-template #loading>
+    <div class="d-flex justify-content-center mt-5">
+        <div class="spinner-border text-info" role="status">
+        </div>
+        <strong class="text-info"> Loading... </strong>
+    </div>
+</ng-template>
+
+<ng-template #loading2>
+    <div class="d-flex justify-content-center mt-5">
+        <div class="spinner-grow text-primary" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <div class="spinner-grow text-info" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <div class="spinner-grow text-dark" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <div class="spinner-grow text-primary" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <div class="spinner-grow text-info" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <div class="spinner-grow text-dark" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <div class="spinner-grow text-primary" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <!-- <div class="d-flex justify-content-center mt-5">
+        <strong class="text-info"> Choose Document... </strong><br>
+    </div> -->
+
+</ng-template>
+
+<ng-template #noElement>
+    <div class="alert alert-info" role="alert">
+        {{mensaje}}
+    </div>
+</ng-template>
+
+<div #addMLibro class="modal fade" id="addMLibro" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form class="form" [formGroup]="addFolderForm">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">New Book</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-2">
+                        <div class="col">
+                            <label for="numFolder">Book:</label>
+                            <input #inputEl type="number" class="form-control" id="numFolder" name="numFolder"
+                                formControlName="numFolder" focus>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button class="btn btn-primary" (click)="createFolder()" [disabled]="!addFolderForm.valid">Save
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

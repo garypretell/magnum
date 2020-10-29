@@ -2,7 +2,7 @@
   "targets": {
     "indexa-7cdf3": {
       "hosting": {
-        "angular-electron": [
+        "MAGNUM": [
           "indexa-7cdf3"
         ]
       }

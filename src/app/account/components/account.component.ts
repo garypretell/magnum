@@ -1,16 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-
 import { AngularFireAuth } from '@angular/fire/auth';
-import { of } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import Swal from 'sweetalert2';
 import { AuthService } from 'app/auth/auth.service';
-
-declare let jQuery: any;
-declare const $;
 
 @Component({
   selector: 'app-account',

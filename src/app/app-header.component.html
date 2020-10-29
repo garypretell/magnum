@@ -29,11 +29,19 @@
     <form class="form-inline my-2 my-lg-0">
       <!-- <button type="button" (click)="signOut()" class="btn btn-outline-danger">Cerrar Sesión <i class="fa fa-power-off"
           aria-hidden="true"></i></button> -->
-      <span class="navbar-text">
+         ({{ name }})
+      <span class="navbar-text mx-1">
         <div class="btn-group">
-          <img role="button" src="https://res.cloudinary.com/mhmd/image/upload/v1564960395/avatar_usae7z.svg"
+          <ng-container *ngIf="foto; else foto2" >
+            <img role="button" src="{{foto}}"
             alt="avatar" width="50" class="rounded-circle" data-toggle="dropdown" data-display="static"
             aria-haspopup="true" aria-expanded="false" />
+          </ng-container>
+          <ng-template #foto2>
+            <img role="button" src="https://res.cloudinary.com/mhmd/image/upload/v1564960395/avatar_usae7z.svg"
+            alt="avatar" width="50" class="rounded-circle" data-toggle="dropdown" data-display="static"
+            aria-haspopup="true" aria-expanded="false" />
+          </ng-template>
           <div class="dropdown-menu dropdown-menu-lg-right">
             <button class="dropdown-item" type="button">Avatar</button>
             <button class="dropdown-item" type="button" (click)="goReporte()">My Progress</button>

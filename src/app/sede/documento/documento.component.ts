@@ -21,6 +21,7 @@ export class DocumentoComponent implements OnInit, OnDestroy, AfterViewChecked, 
   checkBoxValue: boolean;
   searchDoc: any = {};
 
+  nameProject;
   miproyecto: any;
   misede: any;
   proyecto: any;
@@ -37,9 +38,9 @@ export class DocumentoComponent implements OnInit, OnDestroy, AfterViewChecked, 
   gradient = false;
   showLegend = true;
   showXAxisLabel = true;
-  xAxisLabel = 'DOCUMENTO';
+  xAxisLabel = 'DOCUMENTS';
   showYAxisLabel = true;
-  yAxisLabel = 'REGISTROS';
+  yAxisLabel = 'RECORDS';
   nombreGrafica: any;
   constructor(
     public formBuilder: FormBuilder,
@@ -49,7 +50,7 @@ export class DocumentoComponent implements OnInit, OnDestroy, AfterViewChecked, 
     private activatedroute: ActivatedRoute,
   ) {
     this.checkBoxValue = false;
-    this.view = [innerWidth / 2.0, 300];
+    this.view = [innerWidth / 1.8, innerHeight / 1.5];
   }
 
   sub;
@@ -63,6 +64,7 @@ export class DocumentoComponent implements OnInit, OnDestroy, AfterViewChecked, 
     })).subscribe();
 
     this.afs.doc(`Proyecto/${this.miproyecto}`).valueChanges().pipe(switchMap((m: any) => {
+      this.nameProject = m.proyecto.nombre;
       return this.afs.doc(`Sede/${this.misede}`).valueChanges().pipe(map((data: any) => {
         this.proyecto = { nombre: m.nombre, id: data.proyecto };
         this.sede = { nombre: data.nombre, id: data.sede };
@@ -161,8 +163,8 @@ export class DocumentoComponent implements OnInit, OnDestroy, AfterViewChecked, 
   }
 
   onResize(event) {
-    this.view = [innerWidth / 2.0, 300];
-    // this.view = [event.target.innerWidth / 1.35, 400];
+    // this.view = [innerWidth / 2.0, 300];
+    this.view = [event.target.innerWidth / 1.6, event.target.innerHeight / 1.6];
   }
 
   goPlantilla(documento) {

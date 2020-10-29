@@ -32,6 +32,7 @@ export class LibroDetailComponent implements OnInit, OnDestroy {
   milibro: any;
   miruta: any;
   p = 1;
+  rutaImg;
   campos$: Observable<any>;
   registros$: Observable<any>;
   micodigo: any;
@@ -52,7 +53,8 @@ export class LibroDetailComponent implements OnInit, OnDestroy {
       this.midocumento = this.miproyecto + '_' + this.documento;
       this.milibro = params.get('l');
       this.miruta = this.midocumento + '_' + this.milibro;
-      this.verifyData(this.miruta);
+      this.rutaImg = this.misede + '_' + params.get('d').replace(/ /g, '') + '_' + this.milibro;
+      this.verifyData(this.rutaImg);
       this.campos$ = this.afs.doc(`Plantillas/${this.midocumento}`).valueChanges();
       this.registros$ = this.afs.collection(`Registros`, ref => ref.where('sede.id', '==', this.misede)
         .where('documento', '==', this.documento).where('libro', '==', parseFloat(this.milibro)).orderBy('mifecha', 'desc'))

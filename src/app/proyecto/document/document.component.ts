@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from 'app/auth/auth.service';
 import { Observable, of, Subject } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
+import { map, switchMap, takeUntil } from 'rxjs/operators';
 import Swal from 'sweetalert2';
 declare var jQuery: any;
 declare const $;
@@ -21,7 +21,7 @@ export class DocumentComponent implements OnInit, OnDestroy, AfterViewInit {
   documentos$: Observable<any>;
   miproyecto: any;
   searchDoc: any = {};
-
+  nameProject;
   view: any[];
 
   // options
@@ -42,7 +42,7 @@ export class DocumentComponent implements OnInit, OnDestroy, AfterViewInit {
     private afs: AngularFirestore,
     private activatedroute: ActivatedRoute
   ) {
-    this.view = [innerWidth / 2.0, 300];
+    this.view = [innerWidth / 2.0, innerHeight / 2.2];
    }
 
   sub;
@@ -52,6 +52,14 @@ export class DocumentComponent implements OnInit, OnDestroy, AfterViewInit {
         .orderBy('createdAt', 'desc')).valueChanges({ idField: 'ids' });
       this.miproyecto = params.get('p');
     })).subscribe();
+
+    this.afs.doc(`Proyecto/${this.miproyecto}`).valueChanges().pipe(map((m: any) => {
+      if(m){
+        this.nameProject = m.name;
+      }else {
+        return of(null);
+      }
+    }), takeUntil(this.unsubscribe$)).subscribe();
 
     this.addDocumentoForm = this.formBuilder.group({
       nombre: ['', [Validators.required]]
@@ -137,8 +145,8 @@ export class DocumentComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onResize(event) {
-    this.view = [innerWidth / 2.0, 300];
-    // this.view = [event.target.innerWidth / 1.35, 400];
+    // this.view = [innerWidth / 2.0, 300];
+    this.view = [event.target.innerWidth / 2.0, event.target.innerHeight /2.2];
   }
 
   async goPlantilla(documento) {

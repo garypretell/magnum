@@ -42,6 +42,8 @@ export class LibroRegistrarComponent implements OnInit, OnDestroy {
   midata: any;
   listado: boolean;
   image: any;
+  contador;
+  recordsLength;
   constructor(
     public auth: AuthService,
     public formBuilder: FormBuilder,
@@ -60,14 +62,18 @@ export class LibroRegistrarComponent implements OnInit, OnDestroy {
       this.documento = params.get('d');
       this.midocumento = this.miproyecto + '_' + this.documento;
       this.milibro = params.get('l');
-      this.miruta = this.midocumento + '_' + this.milibro;
-      this.rutaImg = this.miproyecto + '_' + params.get('d').replace(/ /g, '') + '_' + this.milibro;
-      this.actualizarData(this.miruta);
+      this.miruta = this.misede + '_' + this.milibro;
+      this.rutaImg = this.misede + '_' + params.get('d').replace(/ /g, '') + '_' + this.milibro;
+      this.actualizarData(this.rutaImg);
       this.campos$ = this.afs.doc(`Plantillas/${this.midocumento}`).valueChanges();
       this.registros$ = this.afs.collection(`Registros`, ref => ref.where('sede.id', '==', this.misede)
         .where('documento', '==', this.documento).where('libro', '==', parseFloat(this.milibro)).orderBy('mifecha', 'desc').limit(6))
         .valueChanges({ idField: 'id' });
     });
+    this.afs.doc(`Libros/${this.rutaImg}`).valueChanges().pipe(map((m: any) => {
+      this.contador = m.contador;
+      this.recordsLength = m.recordsLength;
+    }), takeUntil(this.unsubscribe$)).subscribe()
 
     this.afs.doc(`Proyecto/${this.miproyecto}`).valueChanges().pipe(switchMap((m: any) => {
       return this.afs.doc(`Sede/${this.misede}`).valueChanges().pipe(map((data: any) => {
@@ -117,11 +123,11 @@ export class LibroRegistrarComponent implements OnInit, OnDestroy {
     }).then((result) => {
       if (result.value) {
         this.afs.doc(`Registros/${registro.id}`).delete();
-        const rutaDoc = this.misede + '_' + this.documento;
+        const rutaDoc = this.miproyecto + '_' + this.documento;
         const value = { value: firebase.firestore.FieldValue.increment(-1) };
         const datos = { contador: firebase.firestore.FieldValue.increment(-1) };
         this.afs.doc(`Documentos/${rutaDoc}`).set(value, { merge: true });
-        this.afs.doc(`Libros/${this.miruta}`).set(datos, { merge: true });
+        this.afs.doc(`Libros/${this.rutaImg}`).set(datos, { merge: true });
         Swal.fire(
           'Deleted!',
           'Record has been eliminated.',
@@ -151,33 +157,35 @@ export class LibroRegistrarComponent implements OnInit, OnDestroy {
   }
 
   add(registro) {
-    try {
-      registro.path = 'sin imagen';
-      registro.libro = parseFloat(this.milibro);
-      registro.createdAt = Date.parse(new Date().toISOString().substring(0, 10));
-      registro.mifecha = Date.parse(new Date().toISOString());
-      registro.usuarioid = firebase.auth().currentUser.uid;
-      registro.proyecto = this.proyecto;
-      registro.sede = this.sede;
-      registro.documento = this.documento;
-
-      this.afs.collection(`Registros`).add(registro);
-      const datos = { contador: firebase.firestore.FieldValue.increment(1) };
-      const rutaDoc = this.miproyecto + '_' + this.documento;
-      const value = { value: firebase.firestore.FieldValue.increment(1) };
-      this.afs.doc(`Documentos/${rutaDoc}`).set(value, { merge: true });
-      this.afs.doc(`Proyecto/${this.proyecto.id}`).set(value, { merge: true });
-      this.afs.doc(`Libros/${this.miruta}`).set(datos, { merge: true });
-      this.newObject = {};
-      registro = null;
-      // $('input:text:visible:first').focus();
-      $('input:enabled:visible:first').focus();
-    } catch (error) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'There was an unexpected error!'
-      });
+    if(this.contador<= this.recordsLength){
+      try {
+        registro.path = 'sin imagen';
+        registro.libro = parseFloat(this.milibro);
+        registro.createdAt = Date.parse(new Date().toISOString().substring(0, 10));
+        registro.mifecha = Date.parse(new Date().toISOString());
+        registro.usuarioid = firebase.auth().currentUser.uid;
+        registro.proyecto = this.proyecto;
+        registro.sede = this.sede;
+        registro.documento = this.documento;
+  
+        this.afs.collection(`Registros`).add(registro);
+        const datos = { contador: firebase.firestore.FieldValue.increment(1) };
+        const rutaDoc = this.miproyecto + '_' + this.documento;
+        const value = { value: firebase.firestore.FieldValue.increment(1) };
+        this.afs.doc(`Documentos/${rutaDoc}`).set(value, { merge: true });
+        this.afs.doc(`Proyecto/${this.proyecto.id}`).set(value, { merge: true });
+        this.afs.doc(`Libros/${this.rutaImg}`).set(datos, { merge: true });
+        this.newObject = {};
+        registro = null;
+        // $('input:text:visible:first').focus();
+        $('input:enabled:visible:first').focus();
+      } catch (error) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'There was an unexpected error!'
+        });
+      }
     }
   }
 

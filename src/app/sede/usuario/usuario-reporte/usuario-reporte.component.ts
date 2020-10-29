@@ -44,7 +44,7 @@ export class UsuarioReporteComponent implements OnInit, OnDestroy {
     public activatedroute: ActivatedRoute,
     public auth: AuthService
   ) {
-    this.view = [innerWidth / 2.0, 300];
+    this.view = [innerWidth / 1.8, innerHeight / 1.9];
   }
 
   sub;
@@ -67,7 +67,7 @@ export class UsuarioReporteComponent implements OnInit, OnDestroy {
   }
 
   onResize(event) {
-    this.view = [event.target.innerWidth / 1.8, 300];
+    this.view = [event.target.innerWidth / 1.8, event.target.innerHeight/ 1.9];
   }
 
   onSelect(event) {

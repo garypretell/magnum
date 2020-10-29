@@ -1,16 +1,28 @@
-<nav aria-label="breadcrumb" class="mt-2">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a [routerLink]="['/']"> MAGNUM</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Registrar</li>
-    </ol>
+<nav class="navbar navbar-expand-lg sticky-top navbar-light bg-light mt-2">
+  <form class="form-inline my-2 mr-lg-2">
+    <a class="nav-link" class="btn text-primary">
+      <strong>
+          CREATE ACCOUNT
+      </strong><span class="sr-only">(current)</span></a>
+  </form>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+    </ul>
+    <form class="form-inline my-2 my-lg-0">
+      <a class="btn btn-outline-primary mr-2" [routerLink]="['/']"> Login</a>
+    </form>
+  </div>
 </nav>
-
 <div class="container">
     <div class="row justify-content-center mt-5">
         <div class="col-md-6">
-            <div class="shadow card">
+            <div class="shadow-lg card">
                 <div class="card-body">
-                    <h5 class="card-title">Registro de usuarios</h5>
+                    <h5 class="card-title">Create Account</h5>
                     <hr />
                     <form [formGroup]="accountForm"> 
                         <div class="form-group">
@@ -18,27 +30,27 @@
                             <input type="text" class="form-control" id="exampleDropdownFormEmail3" formControlName="displayName" placeholder="Nickname" required>
                           </div>
                         <div class="form-group">
-                            <label for="exampleDropdownFormEmail2">Correo Electrónico</label>
+                            <label for="exampleDropdownFormEmail2">Email</label>
                             <input type="email" class="form-control" id="exampleDropdownFormEmail2" formControlName="email" placeholder="email@example.com" required>
                           </div>
                           <div class="form-group">
-                            <label for="exampleDropdownFormPassword2">Contraseña</label>
-                            <input type="password" class="form-control" id="exampleDropdownFormPassword2" formControlName="password" placeholder="Contraseña" required>
+                            <label for="exampleDropdownFormPassword2">Password</label>
+                            <input type="password" class="form-control" id="exampleDropdownFormPassword2" formControlName="password" placeholder="Password" required>
                           </div>
                           <div class="form-group">
-                            <label for="proyecto">Proyecto(código)</label>
-                            <input type="password" class="form-control" id="proyecto" formControlName="proyecto" placeholder="Proyecto" required>
+                            <label for="proyecto">Project(code)</label>
+                            <input type="password" class="form-control" id="proyecto" formControlName="proyecto" placeholder="Project" required>
                           </div>
                           <div class="form-group">
-                            <label for="sede">Sede(código)</label>
-                            <input type="password" class="form-control" id="sede" formControlName="sede" placeholder="Sede" required>
+                            <label for="sede">Location(code)</label>
+                            <input type="password" class="form-control" id="sede" formControlName="sede" placeholder="Location" required>
                           </div>
                         <hr>
                         <button type="button" class="btn btn-primary" [disabled]="!accountForm.valid" (click)="onRegister()">
-                            Registrar
+                            Sign On
                         </button><br>
                         <small class="text-danger" *ngIf="validarCodigos" >
-                          Los datos ingresados no son válidos!!
+                        The data entered is not valid!!
                         </small>
                     </form>
                 </div>

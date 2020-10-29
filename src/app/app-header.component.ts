@@ -24,7 +24,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   @ViewChild('myModal') myModal: ElementRef;
   elementos: any[] = [];
   currentChoice: string;
-  name$: any;
+  name: any;
   codigo: any;
   message;
   mensaje: any;
@@ -50,9 +50,9 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   sub;
   ngOnInit() {
     this.directorio$ = this.afs.collection(`Directorio`).valueChanges();
-    this.sub = this.afAuth.authState.pipe(switchMap(data => {
+    this.sub = this.auth.user$.pipe(switchMap((data: any) => {
       if (data) {
-        this.name$ = data.displayName;
+         this.name = data.displayName;
         this.foto = data.photoURL;
         return this.afs.doc(`usuarios/${data.uid}`).valueChanges().pipe(map((m: any) => {
           this.super = m.roles.super;

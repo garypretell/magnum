@@ -1,5 +1,6 @@
-import { AuthService } from '../../auth/auth.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { AuthService } from '../../auth/auth.service';
+import { hasCustomClaim } from '@angular/fire/auth-guard';
 import { ViewChild, ElementRef } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import {
@@ -31,6 +32,7 @@ import { Router } from '@angular/router';
 import { InicioService } from '../inicio.service';
 import Swal from 'sweetalert2';
 import { SedeService } from 'app/sede/sede.service';
+import { AngularFireAuth } from '@angular/fire/auth';
 
 declare let jQuery: any;
 declare const $;
@@ -54,33 +56,23 @@ export class InicioComponent implements OnInit, OnDestroy {
   email: any;
   sede$: Observable<any>;
   displayName: any;
+  // user;
   constructor(
     public formBuilder: FormBuilder,
     private afs: AngularFirestore,
     public auth: AuthService,
     private router: Router,
     public inicioService: InicioService,
-    public sedeService: SedeService
+    public sedeService: SedeService,
+    private firebaseAuth: AngularFireAuth,
   ) {
-    this.view = [innerWidth / 1.5, innerHeight/2.4];
+    this.view = [innerWidth / 1.5, innerHeight / 2.4];
     this.isAdmin = false;
   }
 
-  sub;
-  async ngOnInit() {
-    this.pedidosForm = this.formBuilder.group({
-      apellidos: ['', [Validators.required]],
-      nombres: ['', [Validators.required]],
-      correo: ['', [Validators.required]],
-      proyecto: ['', [Validators.required]],
-      sede: ['', [Validators.required]],
-      celular: ['', [Validators.required]],
-      estado: [''],
-      fecha: [''],
-    });
-
-    const { uid } = await this.auth.getUser();
-    this.sub = this.afs
+   async ngOnInit() {
+    const {uid}  = await this.auth.getUser();
+    this.afs
       .doc(`usuarios/${uid}`)
       .valueChanges()
       .pipe(
@@ -115,13 +107,23 @@ export class InicioComponent implements OnInit, OnDestroy {
           } else {
             return of(null);
           }
-        })
+        }), takeUntil(this.unsubscribe$)
       )
       .subscribe();
+    this.pedidosForm = this.formBuilder.group({
+      apellidos: ['', [Validators.required]],
+      nombres: ['', [Validators.required]],
+      correo: ['', [Validators.required]],
+      proyecto: ['', [Validators.required]],
+      sede: ['', [Validators.required]],
+      celular: ['', [Validators.required]],
+      estado: [''],
+      fecha: [''],
+    });
+
   }
 
   ngOnDestroy() {
-    this.sub.unsubscribe();
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }
@@ -237,12 +239,35 @@ export class InicioComponent implements OnInit, OnDestroy {
     const fs = require('fs');
     if (fs.existsSync('M:/Imagenes')) {
       return this.router.navigate(['/familysearch']);
-    }else{
+    } else {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
         text: 'Disk drive not found!',
       })
     };
+  }
+
+  async goCamera() {
+    const { uid } = await this.auth.getUser();
+    this.afs.doc(`usuarios/${uid}`).valueChanges().pipe(map((data: any) => {
+      if (data) {
+        const proyecto = data.proyecto;
+        const sede = data.sede;
+        return this.router.navigate(['/proyecto', proyecto.id, 'camera']);
+      } else {
+        return of(null);
+      }
+    }), takeUntil(this.unsubscribe$)).subscribe();
+    // const fs = require('fs');
+    // if (fs.existsSync('M:/Photos')) {
+    //   return this.router.navigate(['/Camera']);
+    // } else {
+    //   Swal.fire({
+    //     icon: 'error',
+    //     title: 'Oops...',
+    //     text: 'Disk drive not found!',
+    //   })
+    // };
   }
 }

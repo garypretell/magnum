@@ -1,8 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-import * as firebase from 'firebase/app';
-
-import { Observable, of, from, BehaviorSubject } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { switchMap, map, first, take } from 'rxjs/operators';
 import { User } from './user';
 import { AngularFireAuth } from '@angular/fire/auth';
@@ -17,12 +14,12 @@ export class AuthService {
   authenticated$: Observable<boolean>;
   user$: Observable<any>;
 
-  constructor(private afs: AngularFirestore, private afAuth: AngularFireAuth) {
+  constructor(private afs: AngularFirestore, public afAuth: AngularFireAuth) {
     this.authenticated$ = afAuth.authState.pipe(map(user => !!user));
     this.user$ = this.afAuth.authState.pipe(
       switchMap(user => {
         if (user) {
-          return this.afs.doc<any>(`usuarios/${user.uid}`).valueChanges();
+          return this.afs.doc(`usuarios/${user.uid}`).valueChanges();
         } else {
           return of(null);
         }
@@ -51,7 +48,6 @@ export class AuthService {
   async login(email: string, password: string): Promise<any> {
     try {
       const { user } = await this.afAuth.signInWithEmailAndPassword(email, password);
-      this.updateUserData(user);
       return user;
     } catch (error) {
       console.log('Error->', error);
@@ -79,24 +75,10 @@ export class AuthService {
     await this.afAuth.signOut();
   }
 
-  private updateUserData(user) {
-    const userRef: AngularFirestoreDocument<any> = this.afs.doc(`usuarios/${user.uid}`);
-    const data: any = {
-      lastSesion:  Date.now(),
-      uid: user.uid,
-      email: user.email,
-      emailVerified: user.emailVerified,
-      estado: true,
-      roles: {
-        subscriber: true
-      }
-    };
-    return userRef.set(data, { merge: true });
-  }
-
   private async createUserData(user, usuario, proyecto, sede) {
     const usuarioRef: AngularFirestoreDocument<any> = this.afs.doc(`usuarios/${user.uid}`);
     const data: any = {
+      photoURL: user.photoURL,
       lastSesion: Date.now(),
       uid: user.uid,
       displayName: usuario.displayName,

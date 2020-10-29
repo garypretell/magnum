@@ -8,9 +8,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DocumentComponent } from './document/document.component';
 import { ProyectoDetailComponent } from './proyecto-detail/proyecto-detail.component';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { CameraComponent } from 'app/camera/components/camera/camera.component';
 
 @NgModule({
-  declarations: [ProyectoComponent, DocumentComponent, ProyectoDetailComponent],
+  declarations: [ProyectoComponent, DocumentComponent, ProyectoDetailComponent, CameraComponent],
   imports: [
     CommonModule,
     FormsModule,

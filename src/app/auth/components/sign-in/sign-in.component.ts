@@ -17,13 +17,8 @@ declare const $;
 })
 export class SignInComponent implements OnInit {
   currentDate: any;
-  parroquiasCollection: AngularFirestoreCollection<any>;
-  sedes$: Observable<any[]>;
   ocultar: boolean;
-  searchObject: any = { estado: 'true' };
-  diocesis: string;
-  sede: any;
-  midata: Observable<any>;
+  projects: Observable<any>;
   view: any;
   miError: boolean;
   public loginForm: FormGroup;
@@ -37,29 +32,24 @@ export class SignInComponent implements OnInit {
     public afAuth: AngularFireAuth,
 
   ) {
-    this.view = [innerWidth / 1.5, innerHeight / 1.8];
-    // this.view = [500, 400];
+    this.view = [innerWidth / 1.6, innerHeight / 1.6];
     this.currentDate = new Date();
     this.meta.updateTag({ name: 'description', content: 'Sign In' });
     this.title.setTitle('MAGNUM');
     this.ocultar = true;
-    this.diocesis = 'vacio';
   }
 
   sub;
   ngOnInit() {
     this.miError = false;
-    this.midata = this.afs
+    this.projects = this.afs
       .collection('Proyecto')
       .valueChanges();
-
     this.loginForm = this.formBuilder.group({
       email:  ['', [Validators.required, Validators.email]],
       password:  ['', [Validators.required ]],
     });
   }
-
-
 
   postSignIn() {
     this.router.navigate(['/Home']);
@@ -82,7 +72,7 @@ export class SignInComponent implements OnInit {
   }
 
   onResize(event) {
-    this.view = [event.target.innerWidth / 1.35, 400];
+    this.view = [event.target.innerWidth / 1.6, event.target.innerHeight / 1.6];
   }
 
   goAccount() {
