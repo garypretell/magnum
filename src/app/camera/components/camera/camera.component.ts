@@ -61,7 +61,6 @@ export class CameraComponent implements OnInit, OnDestroy {
     }), takeUntil(this.unsubscribe$)).subscribe();
     this.listado$ = this.afs.collection('Folder', ref => ref
       .where('status', '==', 'INIT')).valueChanges({ idField: 'id' });
-
   }
 
   ngOnDestroy() {
@@ -182,5 +181,9 @@ export class CameraComponent implements OnInit, OnDestroy {
       fs.rmdirSync(path);
     }
   };
+
+  goPhoto(f) {
+    this.router.navigate(['/proyecto', this.miproyecto, 'camera', f.id]);
+  }
 
 }

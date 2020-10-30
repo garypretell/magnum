@@ -26,7 +26,7 @@
             </div>
             <div class="col-md-9 mb-3 bg-light altura">
                 <h4>
-                    <em> {{ sede?.nombre | uppercase }}</em>
+                    <strong>{{ sede?.nombre | uppercase }}</strong>
                 </h4>
                 <div class="shadow alert alert-warning alert-dismissible fade show mt-3 mb-3" role="alert">
                     <strong>Important!</strong> Before starting with the capture of images you should see this video
@@ -60,7 +60,7 @@
                                         {{item.name }}
                                     </td>
                                     <td><span role="button" class="badge badge-primary"
-                                            (click)="goStatus(item)">START</span></td>
+                                            (click)="goPhoto(item)">START</span></td>
                                     <td><span class="badge badge-dark">{{item.status}}</span></td>
                                     <td><span role="button" class="badge badge-danger"
                                             (click)="eliminar(item)">Delete</span></td>

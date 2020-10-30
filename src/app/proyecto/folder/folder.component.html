@@ -1,0 +1,92 @@
+<ng-container *ngIf="(auth.user$ | async)?.roles as rol; else loading">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3 mb-2">
+                <div class="row m-1">
+                    <p class="text-muted small mt-3">
+                        <strong><h4>Capture</h4> </strong>In this section, you can capture images through your DSLR camera.<br>
+                        
+                    </p>
+                    <p class="text-muted small">
+                        See the list of cameras compatible with the system here  <a role="button" class="badge badge-info">Camera List</a>
+                    </p>
+                </div>
+                <hr>
+
+                <div class="row">
+                    <div class="col-4">
+                        <p><strong>Crops List</strong></p>
+                    </div>
+                    <div class="col-8 text-right">
+                        <a role="button" class="badge badge-primary">Create</a>
+                    </div>
+                </div>
+                <select class="custom-select" size="5">
+                    <option value="INDEXING" selected>Indexing</option>
+                    <option value="EVALUATING">Evaluating</option>
+                    <option value="COMPLETE">Complete</option>
+                </select>
+                <p class="text-muted small mt-3">
+                    <strong>MAGNUM </strong>Select a crop from List...
+                </p>
+                <hr class="mt-3 mb-4">
+                <button [disabled]='true' type="button" class="btn btn-primary btn-lg btn-block"
+                        >Capture (F12)</button>
+            </div>
+            <div class="col-md-9 mb-3 bg-light altura">
+                <div class="breadcrumb d-flex justify-content-between align-items-center shadow">
+                    <ol class="breadcrumb  mb-0 p-0">
+                        <li class="breadcrumb-item text-primary"><a role="button" (click)="goHome()">Home</a></li>
+                        <li class="breadcrumb-item text-primary"><a role="button" (click)="backClicked()">Folders</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Capture</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-container>
+
+<ng-template #loading>
+    <div class="d-flex justify-content-center mt-5">
+        <div class="spinner-border text-info" role="status">
+        </div>
+        <strong class="text-info"> Loading... </strong>
+    </div>
+</ng-template>
+
+<ng-template #noElement>
+    <div class="alert alert-info" role="alert">
+        {{mensaje}}
+    </div>
+</ng-template>
+
+<!-- <div #addMLibro class="modal fade" id="addMLibro" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form class="form" [formGroup]="addFolderForm">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">New Book</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-2">
+                        <div class="col">
+                            <label for="numFolder">Book:</label>
+                            <input #inputEl type="number" class="form-control" id="numFolder" name="numFolder"
+                                formControlName="numFolder" focus>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button class="btn btn-primary" (click)="createFolder()" [disabled]="!addFolderForm.valid">Save
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div> -->

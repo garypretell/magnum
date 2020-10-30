@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { CameraComponent } from 'app/camera/components/camera/camera.component';
 import { ProyectoComponent } from './components/proyecto.component';
 import { DocumentComponent } from './document/document.component';
+import { FolderComponent } from './folder/folder.component';
 import { ProyectoDetailComponent } from './proyecto-detail/proyecto-detail.component';
 
 const routes: Routes = [
@@ -15,7 +16,18 @@ const routes: Routes = [
         children: [
           { path: '', component: ProyectoDetailComponent, pathMatch: 'full' },
           { path: 'documents', component: DocumentComponent },
-          { path: 'camera', component: CameraComponent }
+          {
+            path: 'camera',
+            children: [
+              { path: '', component: CameraComponent, pathMatch: 'full' },
+              {
+                path: ':f',
+                children: [
+                  { path: '', component: FolderComponent, pathMatch: 'full' },
+                ]
+              }
+            ]
+          }
         ]
       }
     ]

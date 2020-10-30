@@ -9,9 +9,10 @@ import { DocumentComponent } from './document/document.component';
 import { ProyectoDetailComponent } from './proyecto-detail/proyecto-detail.component';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { CameraComponent } from 'app/camera/components/camera/camera.component';
+import { FolderComponent } from './folder/folder.component';
 
 @NgModule({
-  declarations: [ProyectoComponent, DocumentComponent, ProyectoDetailComponent, CameraComponent],
+  declarations: [ProyectoComponent, DocumentComponent, ProyectoDetailComponent, CameraComponent, FolderComponent],
   imports: [
     CommonModule,
     FormsModule,
