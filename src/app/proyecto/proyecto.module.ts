@@ -10,9 +10,11 @@ import { ProyectoDetailComponent } from './proyecto-detail/proyecto-detail.compo
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { CameraComponent } from 'app/camera/components/camera/camera.component';
 import { FolderComponent } from './folder/folder.component';
+import { ImageCropperModule } from 'ngx-image-cropper';
+import { CropComponent } from './crop/crop.component';
 
 @NgModule({
-  declarations: [ProyectoComponent, DocumentComponent, ProyectoDetailComponent, CameraComponent, FolderComponent],
+  declarations: [ProyectoComponent, DocumentComponent, ProyectoDetailComponent, CameraComponent, FolderComponent, CropComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -21,6 +23,7 @@ import { FolderComponent } from './folder/folder.component';
     FilterPipeModule,
     ProyectoRoutingModule,
     NgxChartsModule,
+    ImageCropperModule
   ]
 })
 export class ProyectoModule { }

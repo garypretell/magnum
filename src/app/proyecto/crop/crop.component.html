@@ -1,0 +1,88 @@
+<ng-container *ngIf="(auth.user$ | async)?.roles as rol; else loading">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3 mb-2">
+                <div class="row m-1">
+                    <p class="text-muted small mt-3">
+                        <strong>
+                            <h4>Crop</h4>
+                        </strong>In this section, you must resize the captured image and save it in your list of Crops.
+                    </p>
+                </div>
+                <hr>
+                <div class="row mb-2">
+                    <div class="col">
+                        <input type="text" class="form-control" placeholder="Crop Name">
+                    </div>
+                </div>
+                <button [disabled]='true' type="button" class="btn btn-primary btn-lg btn-block">Save (F12)</button>
+                <p class="text-muted small mt-3">
+                    <strong>MAGNUM </strong>name must be unique...
+                </p>
+                <hr class="mt-3 mb-4">
+                <button class="btn btn-outline-primary btn-block mb-3" (click)="takePhoto()" >Retake</button>
+                <button class="btn btn-outline-secondary btn-block" (click)="crop()" >crops</button>
+                <!-- 
+                <button type="button" class="btn btn-secondary btn-lg btn-block text-center"
+                    (click)="flipHorizontal()">Flip horizontal <i class="fa fa-arrows-h"
+                        aria-hidden="true"></i></button>
+                <button type="button" class="btn btn-secondary btn-lg btn-block text-center"
+                    (click)="flipVertical()">Flip vertical <i class="fa fa-arrows-v" aria-hidden="true"> </i></button> -->
+
+            </div>
+            <div class="col-md-9 mb-3 bg-light altura">
+                <div class="breadcrumb d-flex justify-content-between align-items-center shadow">
+                    <ol class="breadcrumb  mb-0 p-0">
+                        <li class="breadcrumb-item text-primary"><a role="button" (click)="goHome()">Home</a></li>
+                        <li class="breadcrumb-item text-primary"><a role="button" (click)="goFolder()">Folders</a>
+                        </li>
+                        <li class="breadcrumb-item text-primary"><a role="button" (click)="backClicked()">Capture</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Crop</li>
+                    </ol>
+                </div>
+                <div class="btn-group btn-block" role="group" aria-label="Basic example">
+                    <button type="button" class="btn btn-secondary" (click)="rotateLeft()">Rotate left <i
+                            class="fa fa-undo" aria-hidden="true"></i></button>
+                    <button type="button" class="btn btn-secondary" (click)="rotateRight()"><i class="fa fa-repeat"
+                            aria-hidden="true"></i>
+                        Rotate right</button>
+                    <button type="button" class="btn btn-secondary"
+                        (click)="toggleContainWithinAspectRatio()">{{containWithinAspectRatio?'Fill Aspect Ratio':'Contain Within Aspect Ratio'}}
+                        <i class="fa fa-arrows-alt" aria-hidden="true"></i></button>
+                    <button type="button" class="btn btn-secondary" (click)="resetImage()">Reset <i
+                            class="fa fa-refresh" aria-hidden="true"></i></button>
+                    <button type="button" class="btn btn-secondary" (click)="zoomOut()">Zoom <i
+                            class="fa fa-search-minus" aria-hidden="true"></i></button>
+                    <button type="button" class="btn btn-secondary" (click)="zoomIn()">Zoom <i class="fa fa-search-plus"
+                            aria-hidden="true"></i></button>
+                </div>
+
+                <div class="mt-3">
+                    <image-cropper [imageBase64] = "imageBase64String" [maintainAspectRatio]="false"
+                        [containWithinAspectRatio]="containWithinAspectRatio" [aspectRatio]="4 / 3" [cropper]="cropper"
+                        [resizeToWidth]="256" [cropperMinWidth]="128" [onlyScaleDown]="true" [roundCropper]="false"
+                        [canvasRotation]="canvasRotation" [transform]="transform" [alignImage]="'center'"
+                        [style.display]="showCropper ? null : 'none'" format="png" (imageCropped)="imageCropped($event)"
+                        (imageLoaded)="imageLoaded()" (cropperReady)="cropperReady($event)"
+                        (loadImageFailed)="loadImageFailed()"></image-cropper>
+                </div>
+                <!-- <img [src]="croppedImage" [style.border]="croppedImage ? '1px solid black' : 'none'" /> -->
+            </div>
+        </div>
+    </div>
+</ng-container>
+
+<ng-template #loading>
+    <div class="d-flex justify-content-center mt-5">
+        <div class="spinner-border text-info" role="status">
+        </div>
+        <strong class="text-info"> Loading... </strong>
+    </div>
+</ng-template>
+
+<ng-template #noElement>
+    <div class="alert alert-info" role="alert">
+        <!-- {{mensaje}} -->
+    </div>
+</ng-template>

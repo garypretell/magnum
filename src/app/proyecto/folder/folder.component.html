@@ -4,11 +4,11 @@
             <div class="col-md-3 mb-2">
                 <div class="row m-1">
                     <p class="text-muted small mt-3">
-                        <strong><h4>Capture</h4> </strong>In this section, you can capture images through your DSLR camera.<br>
-                        
-                    </p>
-                    <p class="text-muted small">
-                        See the list of cameras compatible with the system here  <a role="button" class="badge badge-info">Camera List</a>
+                        <strong>
+                            <h4>Capture</h4>
+                        </strong>In this section, you can capture images through your DSLR camera.
+                        See the list of cameras compatible with the system here <a role="button"
+                            class="badge badge-info">Camera List</a>
                     </p>
                 </div>
                 <hr>
@@ -18,7 +18,7 @@
                         <p><strong>Crops List</strong></p>
                     </div>
                     <div class="col-8 text-right">
-                        <a role="button" class="badge badge-primary">Create</a>
+                        <a role="button" class="badge badge-primary" (click)="goCrop()" >Create</a>
                     </div>
                 </div>
                 <select class="custom-select" size="5">
@@ -30,8 +30,8 @@
                     <strong>MAGNUM </strong>Select a crop from List...
                 </p>
                 <hr class="mt-3 mb-4">
-                <button [disabled]='true' type="button" class="btn btn-primary btn-lg btn-block"
-                        >Capture (F12)</button>
+                <button [disabled]='true' type="button" class="btn btn-primary btn-lg btn-block">Capture (F12)</button>
+
             </div>
             <div class="col-md-9 mb-3 bg-light altura">
                 <div class="breadcrumb d-flex justify-content-between align-items-center shadow">
@@ -57,7 +57,7 @@
 
 <ng-template #noElement>
     <div class="alert alert-info" role="alert">
-        {{mensaje}}
+        <!-- {{mensaje}} -->
     </div>
 </ng-template>
 
