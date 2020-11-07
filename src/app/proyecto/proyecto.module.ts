@@ -12,6 +12,10 @@ import { CameraComponent } from 'app/camera/components/camera/camera.component';
 import { FolderComponent } from './folder/folder.component';
 import { ImageCropperModule } from 'ngx-image-cropper';
 import { CropComponent } from './crop/crop.component';
+import { NgImageSliderModule } from 'ng-image-slider';
+import { DragulaModule } from 'ng2-dragula';
+import { ImageViewerModule } from 'ng2-image-viewer';
+import { AngularCropperjsModule } from 'angular-cropperjs';
 
 @NgModule({
   declarations: [ProyectoComponent, DocumentComponent, ProyectoDetailComponent, CameraComponent, FolderComponent, CropComponent],
@@ -23,7 +27,11 @@ import { CropComponent } from './crop/crop.component';
     FilterPipeModule,
     ProyectoRoutingModule,
     NgxChartsModule,
-    ImageCropperModule
+    ImageCropperModule,
+    NgImageSliderModule,
+    DragulaModule,
+    ImageViewerModule,
+    AngularCropperjsModule
   ]
 })
 export class ProyectoModule { }

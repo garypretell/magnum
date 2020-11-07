@@ -14,7 +14,7 @@
                     <h6>Documents</h6>
                     <select class="custom-select" size="5" (click)="filterList()" [(ngModel)]="documento"
                         [ngModelOptions]="{standalone: true}">
-                        <option [ngValue]="documento" *ngFor="let documento of documentos">{{documento.name}}</option>
+                        <option [ngValue]="documento" *ngFor="let documento of documentos">{{documento?.name}}</option>
                     </select>
                     <p class="text-muted small mt-3">
                         <strong>MAGNUM </strong>Select a document to start...

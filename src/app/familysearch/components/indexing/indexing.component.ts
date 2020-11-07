@@ -213,6 +213,7 @@ export class IndexingComponent implements OnInit, OnDestroy {
       if(m.length > 0){
         this.imgObj = m[0];
         this.image = this.electronService.fs.readFileSync(m[0].pathname).toString('base64');
+        console.log(this.image);
         $('input:text:visible:first').focus();
       }else{
         if(this.contador > 0){

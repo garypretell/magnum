@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from 'app/auth/auth.service';
 import { Location } from '@angular/common';
@@ -14,7 +14,7 @@ import { ElectronService } from 'app/core/services';
   templateUrl: './crop.component.html',
   styleUrls: ['./crop.component.scss']
 })
-export class CropComponent implements OnInit, OnDestroy, AfterViewInit {
+export class CropComponent implements OnInit, OnDestroy {
   private unsubscribe$ = new Subject();
   imageChangedEvent: any = '';
   croppedImage: any = '';
@@ -27,6 +27,8 @@ export class CropComponent implements OnInit, OnDestroy, AfterViewInit {
   image;
   imageBase64String;
   cropper: any = {};
+  originalImage;
+  public addCropForm: FormGroup;
   constructor(
     public formBuilder: FormBuilder,
     private afs: AngularFirestore,
@@ -36,29 +38,47 @@ export class CropComponent implements OnInit, OnDestroy, AfterViewInit {
     private _location: Location,
     private electronService: ElectronService
   ) { }
-  ngAfterViewInit(): void {
-
-  }
-
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     if (event.key === 'F12') {
-      const name = `${Date.now()}.jpg`;
-      var child = require('child_process').exec;
-      var executablePath = `M:/camera.bat ${name}`;
-      child(executablePath, function (err, data) {
-        if (err) {
-          console.error(err);
-          return;
-        }
-        console.log(data.toString());
-      });
+      this.takePhoto();
     }
   }
 
-
   ngOnInit() {
     this.takePhoto();
+    this.addCropForm = this.formBuilder.group({
+      nombre: ['', [Validators.required]],
+      estado: [''],
+      usuarioid: [''],
+      x1:[''],
+      y1:[''],
+      x2:[''],
+      y2:[''],
+      x11:[''],
+      y11:[''],
+      x22:[''],
+      y22:[''],
+    });
+
+  }
+
+  async saveCrop() {
+    const { uid } = await this.auth.getUser();
+    this.addCropForm.value.x1 = this.cropper.x1;
+    this.addCropForm.value.y1 = this.cropper.y1;
+    this.addCropForm.value.x2 = this.cropper.x2;
+    this.addCropForm.value.y2 = this.cropper.y2;
+    this.addCropForm.value.x11 = this.originalImage.x1;
+    this.addCropForm.value.y11 = this.originalImage.y1;
+    this.addCropForm.value.x22 = this.originalImage.x2;
+    this.addCropForm.value.y22 = this.originalImage.y2;
+    this.addCropForm.value.estado = true;
+    this.addCropForm.value.usuarioid = uid;
+    this.afs.collection(`Crops`).add(this.addCropForm.value);
+    this.addCropForm.reset();
+    this.backClicked();
+
   }
 
   takePhoto() {
@@ -74,17 +94,6 @@ export class CropComponent implements OnInit, OnDestroy, AfterViewInit {
       // console.log(data);
     })
     this.getFile(dir, 500);
-
-  }
-
-  crop() {
-    var fs = require('fs');
-    const filePath = `M:/${Date.now()}.png`
-     var data = this.croppedImage.replace(/^data:image\/\w+;base64,/, '');
-
-    fs.writeFile(filePath, data, { encoding: 'base64' }, function (err) {
-      //Finished
-    });
   }
 
   getFile(path, timeout) {
@@ -119,13 +128,7 @@ export class CropComponent implements OnInit, OnDestroy, AfterViewInit {
   loadImage() {
     this.image = this.electronService.fs.readFileSync('D:/Magnum-Camera/Crop/crop.jpg').toString('base64');
     this.imageBase64String = 'data:image/jpg;base64,' + this.image;
-    setTimeout(() => {
-      this.cropper = {
-        "x1": 35, "y1": 243, "x2": 346, "y2": 298
-      }
-    }, 1000);
   }
-
   reloadImage() {
     this.loadImage();
   }
@@ -153,9 +156,10 @@ export class CropComponent implements OnInit, OnDestroy, AfterViewInit {
 
   imageCropped(event: ImageCroppedEvent) {
     // this.cropper = event.imagePosition;
-    // console.log(event.imagePosition);
+    console.log(event.imagePosition);
+    this.originalImage = event.imagePosition;
     this.croppedImage = event.base64;
-    console.log(this.croppedImage);
+    // console.log(this.croppedImage);
 
   }
 

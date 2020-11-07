@@ -28,6 +28,7 @@ import { DragulaModule } from 'ng2-dragula';
 import { ImageViewerModule } from 'ng2-image-viewer';
 import { ImageCropperModule } from 'ngx-image-cropper';
 import { NgxSpinnerModule } from "ngx-spinner";
+import { AngularCropperjsModule } from 'angular-cropperjs';
 import { CommonModule } from '@angular/common';
 import { OrderDownlineTreeviewEventParser, TreeviewConfig, TreeviewEventParser, TreeviewModule } from 'ngx-treeview';
 import { NgImageSliderModule } from 'ng-image-slider';
@@ -62,6 +63,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     ImageViewerModule,
     NgxSpinnerModule,
     NgImageSliderModule,
+    AngularCropperjsModule,
     ImageCropperModule,
     TreeviewModule.forRoot(),
     TranslateModule.forRoot({
