@@ -43,7 +43,7 @@ export class SignInComponent implements OnInit {
   ngOnInit() {
     this.miError = false;
     this.projects = this.afs
-      .collection('Proyecto')
+      .collection('Proyecto', ref => ref.where('visible','==', true))
       .valueChanges();
     this.loginForm = this.formBuilder.group({
       email:  ['', [Validators.required, Validators.email]],
@@ -104,6 +104,10 @@ export class SignInComponent implements OnInit {
 
   clearError(): void {
     this.miError = false;
+  }
+
+  resetPassword()  {
+    this.router.navigate(['/resetPassword']);
   }
 
 }

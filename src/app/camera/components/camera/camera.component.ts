@@ -59,7 +59,7 @@ export class CameraComponent implements OnInit, OnDestroy {
         return of(null);
       }
     }), takeUntil(this.unsubscribe$)).subscribe();
-    this.listado$ = this.afs.collection('Folder', ref => ref
+    this.listado$ = this.afs.collection('Folder', ref => ref.where('usuarioid', '==', uid)
       .where('status', '==', 'INIT')).valueChanges({ idField: 'id' });
   }
 
@@ -69,17 +69,19 @@ export class CameraComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
-  filterList() {
+  async filterList() {
+    const { uid } = await this.auth.getUser();
     this.mensaje = 'No items found!';
     this.buttonEnabled = true;
 
-    this.listado$ = this.afs.collection('Folder', ref => ref.where('proyecto.id', '==', this.proyecto.id)
+    this.listado$ = this.afs.collection('Folder', ref => ref.where('usuarioid', '==', uid).where('proyecto.id', '==', this.proyecto.id)
       .where('document', '==', this.documento.nombre)
       .where('status', '==', 'CAPTURE')
-      .orderBy('date', 'desc').limit(14)).valueChanges({ idField: 'id' });
+      .orderBy('date', 'desc').limit(7)).valueChanges({ idField: 'id' });
   }
 
-  createFolder() {
+  async createFolder() {
+    const { uid } = await this.auth.getUser();
     const ruta = this.sede.id + '_' + this.documento.nombre + '_' + this.addFolderForm.value.numFolder;
     const name = this.addFolderForm.value.numFolder;
     this.afs.firestore.doc(`Folder/${ruta}`).get()
@@ -102,7 +104,9 @@ export class CameraComponent implements OnInit, OnDestroy {
             status: "CAPTURE",
             document: this.documento.nombre,
             contador: 0,
-            proyecto: this.proyecto
+            proyecto: this.proyecto,
+            usuarioid: uid,
+            imagenes: []
           };
           if (!fs.existsSync(dir)) {
             fs.mkdirSync(dir, { recursive: true }, (err) => {

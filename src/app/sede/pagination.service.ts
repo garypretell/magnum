@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
 import { BehaviorSubject } from 'rxjs';
 import { Observable } from 'rxjs';
-import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/scan';
 import 'rxjs/add/operator/take';
 import 'rxjs/add/operator/takeLast';
 import 'rxjs/add/operator/last';
+import { tap } from 'rxjs/operators';
 
 interface QueryConfig {
   path: string; // path to collection
@@ -108,8 +108,8 @@ export class PaginationService {
     this._loading.next(true);
 
     // Map snapshot with doc ref (needed for cursor)
-    return col.snapshotChanges()
-      .do(arr => {
+    return col.snapshotChanges().pipe(
+      tap(arr => {
         let values = arr.map(snap => {
           const data = snap.payload.doc.data();
           const doc = snap.payload.doc;
@@ -127,7 +127,7 @@ export class PaginationService {
         if (!values.length) {
           this._done.next(true);
         }
-      })
+      }))
       .take(1)
       .subscribe();
 

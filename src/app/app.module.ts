@@ -32,9 +32,8 @@ import { AngularCropperjsModule } from 'angular-cropperjs';
 import { CommonModule } from '@angular/common';
 import { OrderDownlineTreeviewEventParser, TreeviewConfig, TreeviewEventParser, TreeviewModule } from 'ngx-treeview';
 import { NgImageSliderModule } from 'ng-image-slider';
-import { AngularFireAuth } from '@angular/fire/auth';
-import { AuthService } from './auth/auth.service';
-import { AdminGuard, AuthGuard, EditorGuard } from './auth/guards';
+import { DragScrollModule } from 'ngx-drag-scroll';
+
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -65,6 +64,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     NgImageSliderModule,
     AngularCropperjsModule,
     ImageCropperModule,
+    DragScrollModule,
     TreeviewModule.forRoot(),
     TranslateModule.forRoot({
       loader: {

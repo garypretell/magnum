@@ -1,4 +1,3 @@
-import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/take';
 
 import { Injectable } from '@angular/core';

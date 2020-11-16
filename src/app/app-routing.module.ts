@@ -4,6 +4,7 @@ import { PageNotFoundComponent } from './shared/components';
 
 import { RequireUnauthGuard, EditorGuard } from './auth/guards';
 import { SedeResolverGuard } from './sede/sede-resolver.guard';
+import { ResetPasswordComponent } from './shared/reset-password/reset-password.component';
 const routes: Routes = [
   {
     path: '',

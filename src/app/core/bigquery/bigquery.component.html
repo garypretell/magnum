@@ -1,0 +1,25 @@
+<button (click)="createTable()">
+    Create Table
+  </button>
+  
+  <button (click)="insertTask()">
+    Insert Task
+  </button>
+  
+  <button (click)="selectAllTask()">
+    Show All Tasks
+  </button>
+  
+  <button (click)="updateTask()">
+    Update Task
+  </button>
+  
+  <button (click)="deleteTask()">
+    Delete Task
+  </button>
+  
+  <div *ngFor="let task of todolist">
+  
+    {{task | json}}
+  
+  </div>

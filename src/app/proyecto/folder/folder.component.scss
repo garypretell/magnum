@@ -3,6 +3,28 @@
   overflow-y: auto;
 }
 
+.altura2 {
+  height: calc(100vh - 100px);
+  overflow-y: auto;
+}
+
 .image-gallery-2 {
   height: 200px!important;
+}
+
+drag-scroll {
+  height: 100px;
+  // width: 100px;
+}
+
+.imgen {
+  height: 100px;
+  width: 100px;
+}
+
+
+.altura3 {
+  height: calc(100vh - 300px);
+  overflow: hidden;
+  // text-align: center;
 }

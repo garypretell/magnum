@@ -42,6 +42,7 @@ export class ProyectoComponent implements OnInit, OnDestroy {
       createdAt: [''],
       value: [''],
       name: [''],
+      visible: ['']
     });
   }
 
@@ -77,6 +78,7 @@ export class ProyectoComponent implements OnInit, OnDestroy {
           });
           this.addProyectoForm.reset();
         } else {
+          this.addProyectoForm.value.visible = true;
           this.addProyectoForm.value.transferencia = false;
           this.addProyectoForm.value.estado = true;
           this.addProyectoForm.value.total_registros = 0;

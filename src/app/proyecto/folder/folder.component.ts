@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, HostListener, OnDestroy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { FormBuilder } from '@angular/forms';
@@ -8,13 +8,29 @@ import { base64ToFile, Dimensions, ImageCroppedEvent, ImageTransform } from 'ngx
 import { map, switchMap } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
 import { ElectronService } from 'app/core/services';
+import Swal from 'sweetalert2';
+import { DragScrollComponent } from 'ngx-drag-scroll';
+import { firestore } from 'firebase/app';
+import panzoom from "panzoom";
+import { SafePipe } from 'app/shared/pipe/Safe.pipe';
+declare const jQuery: any;
+declare const $;
 
 @Component({
   selector: 'app-folder',
   templateUrl: './folder.component.html',
   styleUrls: ['./folder.component.scss']
 })
-export class FolderComponent implements OnInit, OnDestroy {
+
+export class FolderComponent implements OnInit, OnDestroy, AfterViewInit {
+  @ViewChild('scene') scene: ElementRef;
+  panZoomController;
+  zoomLevels: number[];
+
+  currentZoomLevel: number;
+
+  @ViewChild('nav', { read: DragScrollComponent }) ds: DragScrollComponent;
+  welcomeMessage = false;
   private unsubscribe$ = new Subject();
   showCropper = false;
   image: any;
@@ -25,10 +41,11 @@ export class FolderComponent implements OnInit, OnDestroy {
   miCrop$: Observable<any>;
   base64Image;
   dataUrl;
-
+  listPath: any[] = [];
   folderPath;
   document;
   name;
+  folder$: Observable<any>;
   constructor(
     public formBuilder: FormBuilder,
     private afs: AngularFirestore,
@@ -45,22 +62,33 @@ export class FolderComponent implements OnInit, OnDestroy {
       if (this.microp) {
         this.takePhoto();
       } else {
-        alert('seleccione crop');
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Select a crop from List...!',
+        })
+        // alert('seleccione crop');
       }
     }
   }
 
   sub;
-  ngOnInit() {
+  async ngOnInit() {
     this.sub = this.activatedroute.paramMap.pipe(switchMap(params => {
       this.mifolder = params.get('f');
+      this.folder$ = this.afs.doc(`Folder/${this.mifolder}`).valueChanges();
       return this.afs.doc(`Folder/${this.mifolder}`).valueChanges().pipe(map((data: any) => {
-        this.folderPath = data.pathname;
-        this.document = data.document;
-        this.name = data.name;
+        if (data) {
+          this.folderPath = data.pathname;
+          this.document = data.document;
+          this.name = data.name;
+          this.listPath = data.imagenes.length;
+        }
       }));
     })).subscribe();
-    this.cropList$ = this.afs.collection('Crops').valueChanges({ idField: 'id' });
+    const { uid } = await this.auth.getUser();
+    this.cropList$ = this.afs.collection('Crops', ref => ref.where('usuarioid', '==', uid)).valueChanges({ idField: 'id' });
+
   }
 
   selectCrop() {
@@ -94,9 +122,16 @@ export class FolderComponent implements OnInit, OnDestroy {
     try {
       var fs = require('fs');
       await waitFile(opts);
-      var bitmap = fs.readFileSync(filePath);
-      this.dataUrl = Buffer.from(bitmap).toString('base64');
+      // var bitmap = fs.readFileSync(filePath);
+      // this.dataUrl = Buffer.from(bitmap).toString('base64');
       this.deleteFile(path);
+      const ruta: any = {
+        filePath
+      };
+      this.afs.doc(`Folder/${this.mifolder}`).update({
+        imagenes: firestore.FieldValue.arrayUnion(ruta)
+      });
+      this.moveTo(this.listPath);
     } catch (err) {
       console.error(err);
     }
@@ -122,8 +157,27 @@ export class FolderComponent implements OnInit, OnDestroy {
     };
     try {
       await waitFile(opts);
+      var preview: any = document.getElementById('scene');
+      var imageClipper = require('image-clipper');
+      this.welcomeMessage = true;
+      const x = this.microp.x11;
+      const y = this.microp.y11;
+      const w = this.microp.x22 - this.microp.x11;
+      const h = this.microp.y22 - this.microp.y11;
+      imageClipper(`D:/Magnum-Camera/Photos/${dir}`, function () {
+        this.crop(x, y, w, h)
+          .toDataURL(function (dataUrl) {
+            console.log('cropped!');
+            preview.src = dataUrl;
+          });
+      });
       this.cropImage(`D:/Magnum-Camera/Photos/${dir}`);
     } catch (err) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Camera not found',
+      })
       console.error(err);
     }
   }
@@ -144,7 +198,7 @@ export class FolderComponent implements OnInit, OnDestroy {
   }
 
   loadImage(path) {
-    console.log(path);
+    // console.log(path);
   }
 
   ngOnDestroy() {
@@ -163,6 +217,69 @@ export class FolderComponent implements OnInit, OnDestroy {
 
   goCrop() {
     this.router.navigate(['/proyecto', this.mifolder, 'crop']);
+  }
+
+  deleteCrop() {
+    if (this.microp) {
+      Swal.fire({
+        title: 'Are you sure to delete this crop?',
+        text: 'You won\'t be able to revert this!',
+        icon: 'warning',
+        showCancelButton: true,
+        cancelButtonText: 'Cancel',
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, Delete!'
+      }).then((result) => {
+        if (result.value) {
+          this.afs.doc(`Crops/${this.microp.id}`).delete();
+          this.microp = null;
+          Swal.fire(
+            'Deleted!',
+            'The folder has been deleted.',
+            'success'
+          );
+        }
+      });
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Select a crop from List...!',
+      })
+    }
+  }
+
+  moveLeft() {
+    this.ds.moveLeft();
+  }
+
+  moveRight() {
+    var title = $('img').attr('title');
+    $('img').before(title);
+    this.ds.moveRight();
+  }
+
+  moveTo(index) {
+    this.ds.moveTo(index);
+  }
+
+  ngAfterViewInit() {
+    // Starting ngx-drag-scroll from specified index(3)
+    setTimeout(() => {
+      this.zoomLevels = [0.1, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3];
+      this.currentZoomLevel = this.zoomLevels[4];
+      // panzoom(document.querySelector('#scene'));
+      this.panZoomController = panzoom(this.scene.nativeElement);
+    }, 2000);
+  }
+
+  clickIndex(e) {
+    console.log(e);
+  }
+
+  gotoListCamera(): void {
+    window.open("http://www.gphoto.org/proj/libgphoto2/support.php", "_blank");
   }
 
 }

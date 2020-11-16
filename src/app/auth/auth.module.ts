@@ -10,10 +10,12 @@ import { SignInComponent } from './components/sign-in/sign-in.component';
 import { FilterPipeModule } from 'ngx-filter-pipe';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { ResetPasswordComponent } from 'app/shared/reset-password/reset-password.component';
 
 @NgModule({
   declarations: [
-    SignInComponent
+    SignInComponent,
+    ResetPasswordComponent
   ],
   imports: [
     CommonModule,

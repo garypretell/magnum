@@ -156,7 +156,7 @@ export class CropComponent implements OnInit, OnDestroy {
 
   imageCropped(event: ImageCroppedEvent) {
     // this.cropper = event.imagePosition;
-    console.log(event.imagePosition);
+    // console.log(event.imagePosition);
     this.originalImage = event.imagePosition;
     this.croppedImage = event.base64;
     // console.log(this.croppedImage);

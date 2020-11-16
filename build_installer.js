@@ -7,7 +7,7 @@ const path = require('path');
 // 2. Define input and output directory.
 // Important: the directories must be absolute, not relative e.g
 // appDirectory: "C:\\Users\sdkca\Desktop\OurCodeWorld-win32-x64", 
-const APP_DIR = path.resolve(__dirname, './release-builds/electron-tutorial-app-win32-x64');
+const APP_DIR = path.resolve(__dirname, './release-builds/Magnum-win32-x64');
 // outputDirectory: "C:\\Users\sdkca\Desktop\windows_installer", 
 const OUT_DIR = path.resolve(__dirname, './windows_installer');
 
@@ -35,3 +35,4 @@ msiCreator.create().then(function(){
     // Step 5: Compile the template to a .msi file
     msiCreator.compile();
 });
+

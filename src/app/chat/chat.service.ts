@@ -8,7 +8,6 @@ import { AuthService } from '../auth/auth.service';
 import { map, switchMap, catchError, take } from 'rxjs/operators';
 import { firestore } from 'firebase/app';
 import { Router } from '@angular/router';
-import 'rxjs/add/operator/catch';
 
 @Injectable({
     providedIn: 'root'

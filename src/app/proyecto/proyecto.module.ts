@@ -16,9 +16,11 @@ import { NgImageSliderModule } from 'ng-image-slider';
 import { DragulaModule } from 'ng2-dragula';
 import { ImageViewerModule } from 'ng2-image-viewer';
 import { AngularCropperjsModule } from 'angular-cropperjs';
+import { DragScrollModule } from 'ngx-drag-scroll';
+import { SafePipe } from './pipe/Safe.pipe';
 
 @NgModule({
-  declarations: [ProyectoComponent, DocumentComponent, ProyectoDetailComponent, CameraComponent, FolderComponent, CropComponent],
+  declarations: [ProyectoComponent, DocumentComponent, ProyectoDetailComponent, CameraComponent, FolderComponent, CropComponent, SafePipe],
   imports: [
     CommonModule,
     FormsModule,
@@ -31,7 +33,8 @@ import { AngularCropperjsModule } from 'angular-cropperjs';
     NgImageSliderModule,
     DragulaModule,
     ImageViewerModule,
-    AngularCropperjsModule
+    AngularCropperjsModule,
+    DragScrollModule
   ]
 })
 export class ProyectoModule { }

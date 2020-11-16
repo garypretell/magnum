@@ -150,7 +150,10 @@
             <div class="col-12">
               <div class="shadow card mb-3">
                 <div class="card-body">
-                  <h5 class="card-title">Select a category...</h5>
+                  <div class="d-flex w-100 justify-content-between">
+                    <h5 class="card-title">Select a category...</h5>
+                   <button class="btn btn-primary" (click)="goDocumento()"><i class="fa fa-cog" aria-hidden="true"></i> Settings</button>
+                  </div>
                   <hr>
                   <div class="row row-cols-1 row-cols-md-4 ">
                     <div class="col mb-4 ">
@@ -158,14 +161,6 @@
                         <div class="card-body justify-content-center">
                           <h5 class="card-title text-white"><i class="fa fa-files-o mr-1"
                               aria-hidden="true"></i>RECORDS FAMILYSEARCH</h5>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col mb-4">
-                      <div role="button" class="card h-100 shadow-sm bg-primary" (click)="goDocumento()">
-                        <div class="card-body ">
-                          <h5 class="card-title text-white"><i class="fa fa-folder-open mr-1" aria-hidden="true"></i>NEW
-                            RECORDS </h5>
                         </div>
                       </div>
                     </div>
@@ -177,6 +172,15 @@
                         </div>
                       </div>
                     </div>
+                    <!-- <div class="col mb-4">
+                      <div role="button" class="card h-100 shadow-sm bg-primary" (click)="goDocumento()">
+                        <div class="card-body ">
+                          <h5 class="card-title text-white"><i class="fa fa-cogs" aria-hidden="true"></i>
+                            SETTINGS </h5>
+                        </div>
+                      </div>
+                    </div> -->
+                    
                   </div>
                 </div>
               </div>
